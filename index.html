@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Stephane Chatonsky — Board Practice</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter+Tight:wght@300..700&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #14140f; color: #fff; font-family: 'Inter', system-ui, sans-serif; }
+  #root { width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="cv-data.jsx"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="option-a.jsx"></script>
+<script type="text/babel" src="option-b.jsx"></script>
+<script type="text/babel" src="option-c.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const { useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "headlineFamily": "serif",
+  "density": "compact",
+  "theme": "light",
+  "accentEditorial": "#6b1d1d",
+  "accentInstitutional": "#1c3556",
+  "accentSwiss": "#1f4d36"
+}/*EDITMODE-END*/;
+
+function applyTweaks(t) {
+  const root = document.documentElement;
+  // Headline family per option scopes
+  const families = {
+    serif: "'Source Serif 4', Georgia, serif",
+    sans: "'Inter Tight', 'Inter', system-ui, sans-serif",
+    mono: "'JetBrains Mono', ui-monospace, monospace",
+  };
+  // Apply to each option's CSS scope
+  document.querySelectorAll('.opt-a, .opt-b, .opt-c').forEach(el => {
+    el.style.setProperty('--serif-headline', families.serif);
+    el.style.setProperty('--sans-headline', families.sans);
+    el.style.setProperty('--mono-headline', families.mono);
+  });
+
+  // Density
+  // (Each option uses its own padding rules; we expose a multiplier.)
+  document.querySelectorAll('.opt-a').forEach(el => el.style.setProperty('--accent', t.accentEditorial));
+  document.querySelectorAll('.opt-b').forEach(el => el.style.setProperty('--accent', t.accentInstitutional));
+  document.querySelectorAll('.opt-c').forEach(el => el.style.setProperty('--accent', t.accentSwiss));
+
+  // Theme: light/dark switch — the three options each define their own dark variants.
+  const dark = t.theme === 'dark';
+  document.querySelectorAll('.opt-a').forEach(el => {
+    if (dark) {
+      el.style.setProperty('--bg', '#15110d');
+      el.style.setProperty('--paper', '#1c1814');
+      el.style.setProperty('--ink', '#ede5d4');
+      el.style.setProperty('--soft', '#b8ad9a');
+      el.style.setProperty('--mute', '#8a7e6c');
+      el.style.setProperty('--rule', '#2a221b');
+    } else {
+      el.style.setProperty('--bg', '#f6f1e7');
+      el.style.setProperty('--paper', '#fbf8f2');
+      el.style.setProperty('--ink', '#1a1612');
+      el.style.setProperty('--soft', '#4a423d');
+      el.style.setProperty('--mute', '#847a72');
+      el.style.setProperty('--rule', '#d9cfc1');
+    }
+  });
+  document.querySelectorAll('.opt-b').forEach(el => {
+    if (dark) {
+      el.style.setProperty('--bg', '#0e1218');
+      el.style.setProperty('--paper', '#161b24');
+      el.style.setProperty('--ink', '#e9eaef');
+      el.style.setProperty('--soft', '#aab1bf');
+      el.style.setProperty('--mute', '#7a8090');
+      el.style.setProperty('--rule', '#272d39');
+    } else {
+      el.style.setProperty('--bg', '#ffffff');
+      el.style.setProperty('--paper', '#f7f6f2');
+      el.style.setProperty('--ink', '#131720');
+      el.style.setProperty('--soft', '#3b4250');
+      el.style.setProperty('--mute', '#7a8090');
+      el.style.setProperty('--rule', '#d9dce3');
+    }
+  });
+  document.querySelectorAll('.opt-c').forEach(el => {
+    if (dark) {
+      el.style.setProperty('--bg', '#0c100e');
+      el.style.setProperty('--ink', '#eef0ec');
+      el.style.setProperty('--soft', '#b3bcb6');
+      el.style.setProperty('--mute', '#7c857f');
+      el.style.setProperty('--rule', '#1c211e');
+    } else {
+      el.style.setProperty('--bg', '#fafaf7');
+      el.style.setProperty('--ink', '#0e1410');
+      el.style.setProperty('--soft', '#3a4540');
+      el.style.setProperty('--mute', '#7c857f');
+      el.style.setProperty('--rule', '#e2e3df');
+    }
+  });
+
+  // Headline font swap — applies to h1/h2 across options
+  const fam = families[t.headlineFamily] || families.serif;
+  let swap = document.getElementById('__headline_swap');
+  if (!swap) { swap = document.createElement('style'); swap.id = '__headline_swap'; document.head.appendChild(swap); }
+  swap.textContent = `
+    .opt-a h1, .opt-a h2, .opt-a .standfirst, .opt-a .pull,
+    .opt-b h1, .opt-b h2, .opt-b .crest .mark, .opt-b .contact-card h2,
+    .opt-c h1, .opt-c h2, .opt-c .contact h2 { font-family: ${fam} !important; }
+  `;
+
+  // Density: tighten section padding
+  let densCss = document.getElementById('__density_swap');
+  if (!densCss) { densCss = document.createElement('style'); densCss.id = '__density_swap'; document.head.appendChild(densCss); }
+  if (t.density === 'compact') {
+    densCss.textContent = `
+      .opt-a section { padding: 40px 0 !important; }
+      .opt-a { padding-top: 48px !important; padding-bottom: 80px !important; }
+      .opt-b section { padding: 56px 0 !important; }
+      .opt-b .hero { padding: 64px 0 56px !important; }
+      .opt-c section { padding: 64px 64px !important; }
+      .opt-c .hero { padding: 80px 64px 64px !important; }
+      .opt-c .contact { padding: 64px 64px !important; }
+    `;
+  } else {
+    densCss.textContent = '';
+  }
+}
+
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  useEffect(() => {
+    // Re-apply on every tweak change AND on mount (after a short delay so options have rendered).
+    const id = setTimeout(() => applyTweaks(tweaks), 30);
+    return () => clearTimeout(id);
+  }, [tweaks]);
+
+  return (
+    <>
+      <DesignCanvas
+        title="Personal website— Modernist"
+        subtitle="Stephane Chatonsky · Board Practice · drag to pan, scroll to zoom, click the artboard to focus"
+      >
+        <DCSection id="swiss" title="C. Modernist">
+          <DCArtboard id="c-1" label="Single page · Swiss · forest green" width={1280} height={8200}>
+            <OptionC />
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="Theme">
+          <TweakRadio label="Mode" value={tweaks.theme} options={[
+            { label: 'Light', value: 'light' }, { label: 'Dark', value: 'dark' }
+          ]} onChange={v => setTweak('theme', v)} />
+        </TweakSection>
+
+        <TweakSection title="Headline family" subtitle="Applies to all three options">
+          <TweakRadio label="Family" value={tweaks.headlineFamily} options={[
+            { label: 'Serif', value: 'serif' },
+            { label: 'Sans', value: 'sans' },
+            { label: 'Mono', value: 'mono' },
+          ]} onChange={v => setTweak('headlineFamily', v)} />
+        </TweakSection>
+
+        <TweakSection title="Density">
+          <TweakRadio label="Spacing" value={tweaks.density} options={[
+            { label: 'Airy', value: 'airy' }, { label: 'Compact', value: 'compact' }
+          ]} onChange={v => setTweak('density', v)} />
+        </TweakSection>
+
+        <TweakSection title="Accent">
+          <TweakColor label="Color" value={tweaks.accentSwiss} onChange={v => setTweak('accentSwiss', v)} />
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
