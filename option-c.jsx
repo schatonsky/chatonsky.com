@@ -18,9 +18,9 @@ const OptionC = () => {
         .opt-c .topbar nav a:hover { color: var(--accent); }
         .opt-c .topbar nav .av { color: var(--accent); }
         .opt-c .topbar nav .av::before { content: '●'; margin-right: 6px; font-size: 9px; vertical-align: 2px; }
-        .opt-c .hero { padding: 120px 64px 96px; display: grid; grid-template-columns: 80px 1fr 360px; gap: 48px; border-bottom: 1px solid var(--rule); align-items: start; }
+        .opt-c .hero { padding: 120px 64px 96px; display: grid; grid-template-columns: 80px 1fr 280px; gap: 48px; border-bottom: 1px solid var(--rule); align-items: start; }
         .opt-c .hero .gut { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.08em; }
-        .opt-c .portrait { position: relative; width: 360px; aspect-ratio: 4/5; border: 1px solid var(--rule); overflow: hidden; background: var(--bg); }
+        .opt-c .portrait { position: relative; width: 280px; aspect-ratio: 4/5; border: 1px solid var(--rule); overflow: hidden; background: var(--bg); }
         .opt-c .portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.08) contrast(1.02); }
         .opt-c .portrait .corner { position: absolute; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.85); text-shadow: 0 1px 2px rgba(0,0,0,0.35); z-index: 2; }
         .opt-c .portrait .tl { top: 12px; left: 14px; }
