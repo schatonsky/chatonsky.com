@@ -89,6 +89,32 @@ const OptionC = () => {
         .opt-c .contact .ch-val { font-size: 19px; font-weight: 500; letter-spacing: -0.01em; }
         .opt-c .contact .ch-val a { border-bottom: 1px solid #6fb593; padding-bottom: 1px; }
         .opt-c .footer { padding: 28px 64px; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; border-top: 1px solid var(--rule); }
+
+        @media (max-width: 768px) {
+          .opt-c { width: 100%; font-size: 15px; }
+          .opt-c .topbar { padding: 14px 24px; }
+          .opt-c .topbar nav { gap: 14px; font-size: 11px; }
+          .opt-c .hero { grid-template-columns: 1fr; gap: 32px; padding: 64px 24px 56px; }
+          .opt-c .hero h1 { font-size: 48px; line-height: 1.02; margin-bottom: 24px; }
+          .opt-c .hero .stand { font-size: 17px; }
+          .opt-c .hero .meta { grid-template-columns: repeat(2, max-content); gap: 24px 40px; }
+          .opt-c .portrait { width: 100%; max-width: 320px; }
+          .opt-c section { grid-template-columns: 1fr; gap: 20px; padding: 56px 24px; }
+          .opt-c .pillars { grid-template-columns: 1fr; gap: 28px; }
+          .opt-c .sectors { grid-template-columns: 1fr; }
+          .opt-c .sector { border-right: 0; }
+          .opt-c .sector:nth-last-child(-n+3) { border-bottom: 1px solid var(--rule); }
+          .opt-c .sector:last-child { border-bottom: 0; }
+          .opt-c .row { grid-template-columns: 1fr; gap: 6px; }
+          .opt-c .row .where { text-align: left; }
+          .opt-c .creds, .opt-c .edu { grid-template-columns: 1fr; }
+          .opt-c .writing { grid-template-columns: 1fr; gap: 6px; }
+          .opt-c .writing .o { text-align: left; }
+          .opt-c .contact { grid-template-columns: 1fr; padding: 56px 24px; }
+          .opt-c .contact h2 { font-size: 36px; }
+          .opt-c .contact .ch-grid { grid-template-columns: 1fr; }
+          .opt-c .footer { padding: 24px; flex-direction: column; gap: 8px; }
+        }
       `}</style>
 
       <div className="topbar">
