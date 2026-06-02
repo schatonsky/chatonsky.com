@@ -277,6 +277,7 @@ const CV = {
   },
 
   writings: [
+    { title: "Tokens keep getting cheaper. So why is your AI bill about to explode?", outlet: "LinkedIn", date: "2026", url: "https://www.linkedin.com/posts/schatonsky_three-years-ago-my-ai-bill-was-0-today-activity-7467356376315432960-HuIk" },
     { title: "Sitting With the Second Existential Risk: the case for an IPCC for AI", outlet: "LinkedIn / Web", date: "2026", url: "https://ipccforai.org/" },
     { title: "The Importance of Spending Time: Reflections from 19 Years with my son", outlet: "LinkedIn", date: "2025", url: "https://www.linkedin.com/pulse/importance-spending-time-reflections-from-19-years-my-chatonsky-hhepc/" },
     { title: "Living in AI's Age of Dissociative Identity: Embracing and Fearing the Future at Once", outlet: "LinkedIn", date: "2025", url: "https://www.linkedin.com/pulse/living-ais-age-dissociative-identity-embracing-future-chatonsky-rxcae/" },
