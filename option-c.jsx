@@ -115,6 +115,15 @@ const OptionC = () => {
           .opt-c .contact .ch-grid { grid-template-columns: 1fr; }
           .opt-c .footer { padding: 24px; flex-direction: column; gap: 8px; }
         }
+
+        @media (prefers-reduced-motion: no-preference) {
+          @keyframes heroRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+          @keyframes heroPhoto { from { opacity: 0; transform: translateY(22px) scale(1.02); } to { opacity: 1; transform: translateY(0) scale(1); } }
+          .opt-c .hero h1 { animation: heroRise 0.95s cubic-bezier(0.22, 0.61, 0.36, 1) 0.05s both; }
+          .opt-c .hero .stand { animation: heroRise 0.95s cubic-bezier(0.22, 0.61, 0.36, 1) 0.20s both; }
+          .opt-c .hero .meta { animation: heroRise 0.95s cubic-bezier(0.22, 0.61, 0.36, 1) 0.32s both; }
+          .opt-c .hero .portrait { animation: heroPhoto 1.15s cubic-bezier(0.22, 0.61, 0.36, 1) 0.28s both; }
+        }
       `}</style>
 
       <div className="topbar">
