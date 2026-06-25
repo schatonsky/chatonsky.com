@@ -277,6 +277,7 @@ const CV = {
   },
 
   writings: [
+    { title: "Will AI be the risk we chose not to see?", outlet: "The Ethics Centre", date: "2026", url: "https://ethics.org.au/will-ai-be-the-risk-we-chose-not-to-see/" },
     { title: "The $13 Trillion Question: What You Have to Believe About AI", outlet: "LinkedIn", date: "2026", url: "https://www.linkedin.com/pulse/13-trillion-question-what-you-have-believe-ai-stephane-chatonsky-qkpbc" },
     { title: "Tokens keep getting cheaper. So why is your AI bill about to explode?", outlet: "LinkedIn", date: "2026", url: "https://www.linkedin.com/pulse/tokens-keep-getting-cheaper-so-why-your-ai-bill-stephane-chatonsky-yjvac" },
     { title: "Sitting With the Second Existential Risk: the case for an IPCC for AI", outlet: "LinkedIn / Web", date: "2026", url: "https://ipccforai.org/" },
