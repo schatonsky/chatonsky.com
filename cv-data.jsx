@@ -276,6 +276,24 @@ const CV = {
     linkedinUrl: "https://www.linkedin.com/in/schatonsky/",
   },
 
+  // Talks — single source of truth. Add an object here and it appears under
+  // "Talks" on the /writing page automatically. Leave empty to hide the section.
+  // Shape: { title, venue, date, url } (url optional).
+  talks: [],
+
+  // Apps & tools ("Things") — single source of truth. To add a new tool, add one
+  // object here. It appears automatically on the /writing page and on the home teaser.
+  apps: [
+    {
+      code: "01",
+      tag: "Free for directors",
+      title: "Board AI Governance Assessment",
+      desc: "Twenty-four questions, six dimensions, six minutes. Measure your board's oversight of AI — from strategy and risk to cost and dependency — and get a maturity profile with priority actions.",
+      url: "/assessment",
+      cta: "Start",
+    },
+  ],
+
   writings: [
     { title: "Will AI be the risk we chose not to see?", outlet: "The Ethics Centre", date: "2026", url: "https://ethics.org.au/will-ai-be-the-risk-we-chose-not-to-see/" },
     { title: "The $13 Trillion Question: What You Have to Believe About AI", outlet: "LinkedIn", date: "2026", url: "https://www.linkedin.com/pulse/13-trillion-question-what-you-have-believe-ai-stephane-chatonsky-qkpbc" },

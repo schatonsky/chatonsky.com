@@ -72,6 +72,12 @@ const OptionC = () => {
         .opt-c .edu .item { padding: 18px 0; border-bottom: 1px solid var(--rule); }
         .opt-c .edu .item .s { font-size: 16px; font-weight: 500; letter-spacing: -0.005em; }
         .opt-c .edu .item .l { font-size: 13px; color: var(--soft); margin-top: 4px; font-family: var(--serif); }
+        .opt-c .appcard { border: 1px solid var(--rule); border-left: 3px solid var(--accent); background: #fff; padding: 28px 32px; margin-bottom: 40px; display: grid; grid-template-columns: 1fr max-content; gap: 24px; align-items: center; }
+        .opt-c .appcard .ac-lab { font-family: var(--mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 10px; }
+        .opt-c .appcard h3 { font-size: 21px; font-weight: 500; letter-spacing: -0.01em; margin: 0 0 8px; }
+        .opt-c .appcard p { font-size: 14.5px; line-height: 1.6; color: var(--soft); margin: 0; max-width: 52ch; }
+        .opt-c .appcard .ac-btn { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; padding: 13px 24px; background: var(--accent); color: #f5f5f0; white-space: nowrap; transition: background 0.15s ease; }
+        .opt-c .appcard .ac-btn:hover { background: #163a28; }
         .opt-c .writings { display: grid; grid-template-columns: 1fr; border-top: 1.5px solid var(--ink); }
         .opt-c .writing { display: grid; grid-template-columns: 80px 1fr 200px; gap: 28px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
         .opt-c .writing .yr { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; }
@@ -108,6 +114,8 @@ const OptionC = () => {
           .opt-c .row { grid-template-columns: 1fr; gap: 6px; }
           .opt-c .row .where { text-align: left; }
           .opt-c .creds, .opt-c .edu { grid-template-columns: 1fr; }
+          .opt-c .appcard { grid-template-columns: 1fr; padding: 22px 20px; gap: 18px; }
+          .opt-c .appcard .ac-btn { justify-self: start; }
           .opt-c .writing { grid-template-columns: 1fr; gap: 6px; }
           .opt-c .writing .o { text-align: left; }
           .opt-c .contact { grid-template-columns: 1fr; padding: 56px 24px; }
@@ -129,7 +137,7 @@ const OptionC = () => {
       <div className="topbar">
         <div className="logo"></div>
         <nav>
-          <a href="#approach">Approach</a><a href="#what-i-bring">What I bring</a><a href="#sectors">Sectors</a><a href="#current">Current</a><a href="#prior">Prior</a><a href="#background">Background</a><a href="#credentials">Credentials</a><a href="#writings">Writings</a><a href="#enquiries">Contact</a>
+          <a href="#approach">Approach</a><a href="#what-i-bring">What I bring</a><a href="#sectors">Sectors</a><a href="#current">Current</a><a href="#prior">Prior</a><a href="#background">Background</a><a href="#credentials">Credentials</a><a href="/writing">Writings, Talks &amp; Things</a><a href="#enquiries">Contact</a>
         </nav>
       </div>
 
@@ -221,10 +229,20 @@ const OptionC = () => {
 
       <section id="writings">
         <div className="sec-num">009</div>
-        <div className="sec-head"><div className="lab">Writings</div><h2>Selected articles and commentary.</h2></div>
+        <div className="sec-head"><div className="lab">Writings, Talks &amp; Things</div><h2>What I write, say and build.</h2></div>
         <div>
+          {(C.apps || []).slice(0, 1).map((a, i) =>
+          <div className="appcard" key={i}>
+            <div>
+              <div className="ac-lab">Thing / {a.code}{a.tag ? ' · ' + a.tag : ''}</div>
+              <h3>{a.title}</h3>
+              <p>{a.desc}</p>
+            </div>
+            <a className="ac-btn" href={a.url}>{(a.cta || 'Open')} &rarr;</a>
+          </div>
+          )}
           <div className="writings">
-            {C.writings.map((w, i) =>
+            {C.writings.slice(0, 3).map((w, i) =>
             <div key={i} className="writing">
                 <div className="yr">{w.date}</div>
                 <div className="t"><a href={w.url} target="_blank" rel="noopener">{w.title}</a></div>
@@ -232,6 +250,7 @@ const OptionC = () => {
               </div>
             )}
           </div>
+          <a href="/writing" style={{ display: 'inline-block', marginTop: 28, fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '0.08em', color: 'var(--accent)', borderBottom: '1px solid var(--accent)', paddingBottom: 2 }}>All writings, talks &amp; things &rarr;</a>
         </div>
       </section>
 
