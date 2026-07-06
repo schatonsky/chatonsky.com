@@ -5,6 +5,7 @@ const OptionC = () => {
   const C = window.CV;
   const [openSecs, setOpenSecs] = React.useState({});
   const toggleSec = (id) => setOpenSecs((s) => ({ ...s, [id]: !s[id] }));
+  const openSec = (id) => setOpenSecs((s) => ({ ...s, [id]: true }));
   return (
     <div className="opt-c">
       <style>{`
@@ -142,7 +143,7 @@ const OptionC = () => {
       <div className="topbar">
         <div className="logo"></div>
         <nav>
-          <a href="#approach">Approach</a><a href="#what-i-bring">What I bring</a><a href="#sectors">Sectors</a><a href="#current">Current</a><a href="#prior">Prior</a><a href="#background">Background</a><a href="#credentials">Credentials</a><a href="/writing">Writings, Talks &amp; Things</a><a href="#enquiries">Contact</a>
+          <a href="#approach">Approach</a><a href="#what-i-bring">What I bring</a><a href="#sectors">Sectors</a><a href="#current">Current</a><a href="#prior" onClick={() => openSec('prior')}>Prior</a><a href="#background" onClick={() => openSec('background')}>Background</a><a href="#credentials" onClick={() => openSec('credentials')}>Credentials</a><a href="/writing">Writings, Talks &amp; Things</a><a href="#enquiries">Contact</a>
         </nav>
       </div>
 
