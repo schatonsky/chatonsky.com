@@ -242,7 +242,11 @@ const OptionC = () => {
 
       <section id="writings">
         <div className="sec-num">009</div>
-        <div className="sec-head"><div className="lab">Writings, Talks &amp; Things</div><h2>What I write, say and build.</h2></div>
+        <div className="sec-head collapsible" onClick={() => toggleSec('writings')} role="button" aria-expanded={!!openSecs['writings']}>
+          <div className="lab">Writings, Talks &amp; Things<span className="toggle">{openSecs['writings'] ? '[ − ]' : '[ + ]'}</span></div>
+          <h2>What I write, say and build.</h2>
+        </div>
+        {openSecs['writings'] &&
         <div>
           {(C.apps || []).slice(0, 1).map((a, i) =>
           <div className="appcard" key={i}>
@@ -264,7 +268,7 @@ const OptionC = () => {
             )}
           </div>
           <a href="/writing" style={{ display: 'inline-block', marginTop: 28, fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '0.08em', color: 'var(--accent)', borderBottom: '1px solid var(--accent)', paddingBottom: 2 }}>All writings, talks &amp; things &rarr;</a>
-        </div>
+        </div>}
       </section>
 
       <div className="contact" id="enquiries">
