@@ -269,6 +269,9 @@ const AIDATA = {
 // mode 'demo' shows sample data and stores nothing. Switched to 'live' + Supabase
 // wiring only after the backend is approved.
 const BENCH_MODE = 'demo';
+// Benchmark UI switch: false = show "register your interest" instead of the
+// live form. Flip to true (and BENCH_MODE to 'live') once the backend exists.
+const BENCH_LIVE = false;
 const ASSESS_URL = 'https://chatonsky.com/assessment';
 const SECTORS = [
 'Healthcare & life sciences',
@@ -661,7 +664,15 @@ const BoardAIAssessment = () => {
               }
 
               <div className="bench">
-                {benchState !== 'done' &&
+                {!BENCH_LIVE &&
+                <div className="bform">
+                    <div className="rec-h">Benchmark — coming</div>
+                    <h3>Compare your board against others</h3>
+                    <p className="b-intro">Benchmarking is coming: your results against how other directors have assessed their own boards — across all respondents, your sector, and companies of your size. Register your interest and you will be notified when it goes live.</p>
+                    <a className="btn" href={'mailto:stephane@chatonsky.com?subject=' + encodeURIComponent('Board AI benchmark — register my interest') + '&body=' + encodeURIComponent('Please let me know when the benchmark comparison goes live.\n\nSector:\nAnnual revenue band:\n')}>Register your interest &rarr;</a>
+                  </div>
+                }
+                {BENCH_LIVE && benchState !== 'done' &&
                 <div className="bform">
                     <div className="rec-h">Optional — Benchmark</div>
                     <h3>How does your board compare?</h3>
