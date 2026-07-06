@@ -3,6 +3,8 @@
 
 const OptionC = () => {
   const C = window.CV;
+  const [openSecs, setOpenSecs] = React.useState({});
+  const toggleSec = (id) => setOpenSecs((s) => ({ ...s, [id]: !s[id] }));
   return (
     <div className="opt-c">
       <style>{`
@@ -38,6 +40,9 @@ const OptionC = () => {
         .opt-c .sec-num { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.1em; }
         .opt-c .sec-head { }
         .opt-c .sec-head .lab { font-family: var(--mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 14px; }
+        .opt-c .sec-head.collapsible { cursor: pointer; }
+        .opt-c .sec-head.collapsible:hover h2 { color: var(--accent); }
+        .opt-c .sec-head .toggle { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-left: 12px; vertical-align: 1px; }
         .opt-c .sec-head h2 { font-family: var(--sans); font-weight: 500; font-size: 32px; line-height: 1.1; letter-spacing: -0.02em; margin: 0; max-width: 14ch; }
         .opt-c .body { max-width: 720px; }
         .opt-c .body p { margin: 0 0 16px; max-width: 60ch; font-size: 16px; line-height: 1.6; color: var(--soft); }
@@ -192,12 +197,16 @@ const OptionC = () => {
 
       {[
       { n: '005', id: 'current', l: 'Current', t: 'Boards & advisory · today.', rows: C.current },
-      { n: '006', id: 'prior', l: 'Prior', t: 'Selected previous boards and advisory roles.', rows: C.prior },
-      { n: '007', id: 'background', l: 'Background', t: 'Earlier executive career.', rows: C.executive }].
+      { n: '006', id: 'prior', l: 'Prior', t: 'Selected previous boards and advisory roles.', rows: C.prior, collapsible: true },
+      { n: '007', id: 'background', l: 'Background', t: 'Earlier executive career.', rows: C.executive, collapsible: true }].
       map((s) =>
       <section key={s.n} id={s.id}>
           <div className="sec-num">{s.n}</div>
-          <div className="sec-head"><div className="lab">{s.l}</div><h2>{s.t}</h2></div>
+          <div className={"sec-head" + (s.collapsible ? " collapsible" : "")} onClick={s.collapsible ? () => toggleSec(s.id) : undefined} role={s.collapsible ? "button" : undefined} aria-expanded={s.collapsible ? !!openSecs[s.id] : undefined}>
+            <div className="lab">{s.l}{s.collapsible ? <span className="toggle">{openSecs[s.id] ? '[ − ]' : '[ + ]'}</span> : null}</div>
+            <h2>{s.t}</h2>
+          </div>
+          {(!s.collapsible || openSecs[s.id]) &&
           <div>
             {s.rows.map((r, i) =>
           <div className="row" key={i}>
@@ -210,13 +219,17 @@ const OptionC = () => {
                 <div className="where">{r.where}</div>
               </div>
           )}
-          </div>
+          </div>}
         </section>
       )}
 
       <section id="credentials">
         <div className="sec-num">008</div>
-        <div className="sec-head"><div className="lab">Credentials</div><h2>Independent judgement, on the record.</h2></div>
+        <div className="sec-head collapsible" onClick={() => toggleSec('credentials')} role="button" aria-expanded={!!openSecs['credentials']}>
+          <div className="lab">Credentials<span className="toggle">{openSecs['credentials'] ? '[ − ]' : '[ + ]'}</span></div>
+          <h2>Independent judgement, on the record.</h2>
+        </div>
+        {openSecs['credentials'] &&
         <div>
           <div className="creds">
             {C.credentials.map((c, i) => <div key={i} className="cred"><div className="yr">{c.from} — {c.to}</div><div className="t">{c.title}</div><div className="n">{c.note}</div></div>)}
@@ -224,7 +237,7 @@ const OptionC = () => {
           <div className="edu">
             {C.education.map((e, i) => <div key={i} className="item"><div className="s">{e.school}</div><div className="l">{e.line}</div></div>)}
           </div>
-        </div>
+        </div>}
       </section>
 
       <section id="writings">
