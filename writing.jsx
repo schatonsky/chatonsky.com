@@ -119,7 +119,7 @@ const Writing = () => {
 
       <section id="things">
         <div className="sec-num">{talks.length > 0 ? '03' : '02'}</div>
-        <div className="sec-head"><div className="lab">Things</div><h2>Tools built for boards.</h2></div>
+        <div className="sec-head"><div className="lab">Things</div><h2>Tools built for boards and education.</h2></div>
         <div>
           {apps.length === 0 && <p style={{ color: 'var(--mute)', fontFamily: 'var(--serif)' }}>More tools coming soon.</p>}
           {apps.map((a, i) =>

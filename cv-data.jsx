@@ -292,6 +292,14 @@ const CV = {
       url: "/assessment",
       cta: "Start",
     },
+    {
+      code: "02",
+      tag: "AI for education",
+      title: "Eruleo",
+      desc: "An AI-powered teaching platform for higher education, launching soon with UNSW students. An AI coach that gives individualised feedback on group role-plays, auto-generated weekly recall quizzes, and tools that scale group presentations and interactive concept labs across large classes.",
+      url: "https://eruleo.com",
+      cta: "Visit",
+    },
   ],
 
   writings: [
