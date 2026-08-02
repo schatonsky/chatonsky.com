@@ -303,6 +303,7 @@ const CV = {
   ],
 
   writings: [
+    { title: "Poor AI governance is driving hidden costs", outlet: "AICD", date: "2026", url: "https://www.aicd.com.au/innovative-technology/digital-business/artificial-intelligence/poor-ai-driving-hidden-costs.html" },
     { title: "A tax break for startup employees that reaches almost none of them", outlet: "Treasury submission", date: "2026", url: "/assets/ibcc-submission-treasury-2026.pdf" },
     { title: "Will AI be the risk we chose not to see?", outlet: "The Ethics Centre", date: "2026", url: "https://ethics.org.au/will-ai-be-the-risk-we-chose-not-to-see/" },
     { title: "The $13 Trillion Question: What You Have to Believe About AI", outlet: "LinkedIn", date: "2026", url: "https://www.linkedin.com/pulse/13-trillion-question-what-you-have-believe-ai-stephane-chatonsky-qkpbc" },
