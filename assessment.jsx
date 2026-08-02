@@ -243,6 +243,7 @@ const AIDATA = {
         }],
 
       action: 'Ask for the chart that matters: total AI spend and its growth rate, shown next to falling unit prices. Map provider concentration, model a price shock, and ask where optionality — abstraction layers, more than one model, portability — is affordable, before dependency is locked in.',
+      link: { label: 'Read the article: Poor AI governance is driving hidden costs (AICD)', url: 'https://www.aicd.com.au/innovative-technology/digital-business/artificial-intelligence/poor-ai-driving-hidden-costs.html' },
     }],
 
   levels: [
@@ -435,6 +436,7 @@ const BoardAIAssessment = () => {
         .asmt .rec .rn { font-size: 14.5px; font-weight: 500; }
         .asmt .rec .rn .rc { font-family: var(--mono); font-size: 10.5px; color: var(--accent); margin-right: 10px; letter-spacing: .1em; }
         .asmt .rec p { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--soft); max-width: 56ch; }
+        .asmt .rec a.rec-link { color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 1px; font-weight: 500; }
         .asmt .cta { background: var(--ink); color: #f5f5f0; padding: 44px 48px; margin-top: 60px; }
         .asmt .cta .lab { font-family: var(--mono); font-size: 10.5px; color: var(--accent-soft); letter-spacing: .18em; text-transform: uppercase; margin-bottom: 14px; }
         .asmt .cta h3 { font-weight: 500; font-size: 28px; letter-spacing: -.02em; margin: 0 0 12px; line-height: 1.15; }
@@ -648,7 +650,7 @@ const BoardAIAssessment = () => {
                   {weak.map((d) =>
                 <div className="rec" key={d.code}>
                       <div className="rn"><span className="rc">{d.code}</span>{d.name} &middot; {d.score.toFixed(2)}</div>
-                      <p>{d.action}</p>
+                      <p>{d.action}{d.link && <span> <a className="rec-link" href={d.link.url} target="_blank" rel="noopener">{d.link.label} &rarr;</a></span>}</p>
                     </div>
                 )}
                 </div>
