@@ -2,8 +2,10 @@
 // Modernist / Swiss, forest green. Reuses CV.apps and CV.writings as the
 // single source of truth: to add a post or a tool, edit those arrays in cv-data.jsx.
 
+import CV from './cv-data.jsx';
+
 const Writing = () => {
-  const C = window.CV;
+  const C = CV;
   const apps = C.apps || [];
   const writings = C.writings || [];
   const talks = C.talks || [];
@@ -143,4 +145,4 @@ const Writing = () => {
   );
 };
 
-window.Writing = Writing;
+export default Writing;

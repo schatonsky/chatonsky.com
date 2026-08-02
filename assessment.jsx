@@ -1,6 +1,7 @@
 // Board AI Governance Assessment — chatonsky.com/assessment
 // Same design system as option-c.jsx: Swiss, forest green, Inter Tight + JetBrains Mono.
 // Runs entirely in the browser. No answers are stored or transmitted.
+import React from 'react';
 
 const AIDATA = {
   dimensions: [
@@ -793,4 +794,4 @@ const BoardAIAssessment = () => {
     </div>);
 };
 
-window.BoardAIAssessment = BoardAIAssessment;
+export default BoardAIAssessment;

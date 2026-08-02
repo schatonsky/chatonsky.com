@@ -1,8 +1,10 @@
 // Option C — Modernist / Swiss. Generous whitespace, sans + mono.
 // Forest green accent. Stripe / Linear sensibility. Strong grid, asymmetric.
 
+import CV from './cv-data.jsx';
+
 const OptionC = () => {
-  const C = window.CV;
+  const C = CV;
   const [openSecs, setOpenSecs] = React.useState({});
   const toggleSec = (id) => setOpenSecs((s) => ({ ...s, [id]: !s[id] }));
   const openSec = (id) => setOpenSecs((s) => ({ ...s, [id]: true }));
@@ -293,4 +295,4 @@ const OptionC = () => {
 
 };
 
-window.OptionC = OptionC;
+export default OptionC;

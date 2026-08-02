@@ -324,4 +324,4 @@ const CV = {
   ],
 };
 
-window.CV = CV;
+export default CV;

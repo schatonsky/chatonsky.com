@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <title>Board AI Governance Assessment — Stephane Chatonsky</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
   <meta name="description" content="A free 24-question self-assessment for directors: how well does your board govern AI? Maturity profile across six dimensions — including cost and dependency — with priority actions." />
   <meta property="og:title" content="Board AI Governance Assessment" />
   <meta property="og:description" content="A free 24-question self-assessment for directors: how well does your board govern AI?" />
@@ -37,14 +37,6 @@
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
-
-  <script type="text/babel" src="assessment.jsx"></script>
-
-  <script type="text/babel" data-presets="react">
-    ReactDOM.createRoot(document.getElementById('root')).render(<BoardAIAssessment />);
-  </script>
+  <script type="module" src="/main-assessment.jsx"></script>
 </body>
 </html>
