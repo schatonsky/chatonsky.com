@@ -1,6 +1,7 @@
 // Option C — Modernist / Swiss. Generous whitespace, sans + mono.
 // Forest green accent. Stripe / Linear sensibility. Strong grid, asymmetric.
 
+import React from 'react';
 import CV from './cv-data.jsx';
 
 const OptionC = () => {
