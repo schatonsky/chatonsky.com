@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Cap Table, Dilution &amp; Returns — Stephane Chatonsky</title>
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="manifest" href="/assets/site.webmanifest" />
+<meta name="theme-color" content="#1f4d36">
+<meta name="description" content="Build a company round by round, see who owns what after each raise, and run an exit through the liquidation waterfall — including what anti-dilution and preferences actually cost the founders." />
+<meta property="og:title" content="Cap Table, Dilution &amp; Returns" />
+<meta property="og:description" content="Build a company round by round, see who owns what after each raise, and run an exit through the liquidation waterfall." />
+<meta property="og:image" content="https://chatonsky.com/assets/portrait.jpg" />
+<meta property="og:url" content="https://chatonsky.com/captable" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Cap Table, Dilution &amp; Returns" />
+<meta name="twitter:description" content="Build a company round by round, see who owns what after each raise, and run an exit through the liquidation waterfall." />
+<meta name="twitter:image" content="https://chatonsky.com/assets/portrait.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter+Tight:wght@300..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* chatonsky.com design system */
+    --bg:#fafaf7; --ink:#0e1410; --soft:#3a4540; --mute:#7c857f; --rule:#e2e3df; --accent:#1f4d36;
+    --accent-dark:#163a28; --surface:#fff; --surface-2:#f6f6f2; --line-soft:#eceee9;
+    --sans:'Inter Tight','Inter',system-ui,sans-serif;
+    --serif:'Source Serif 4',Georgia,serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    /* aliases the tool's script reads */
+    --fg:var(--ink); --muted:#7c857f; --line:var(--rule); --ink-soft:#3a4540; --ink-faint:#7c857f;
+    /* status */
+    --green:#1f4d36; --greenbg:#f1f5f2; --red:#9c2f24; --redbg:#fbf1f0;
+    /* categorical series palette — validated (adjacent CVD dE 14.8, normal-vision 15.1,
+       all >= 3:1 on white). Order is the safety mechanism: do not reorder. */
+    --c-found:#b4831f;
+    --c1:#009ba3; --c2:#794db6; --c3:#14874e; --c4:#3772bb; --c5:#cc572a; --c6:#ac4785;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{ margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); font-size:15px; line-height:1.55;
+    -webkit-font-smoothing:antialiased; font-variant-numeric:tabular-nums; }
+  a{ color:inherit; text-decoration:none; }
+
+  /* topbar — matches chatonsky.com */
+  .topbar{ position:sticky; top:0; z-index:50; background:color-mix(in oklab, var(--bg) 92%, transparent);
+    backdrop-filter:saturate(160%) blur(8px); -webkit-backdrop-filter:saturate(160%) blur(8px);
+    display:grid; grid-template-columns:1fr auto; align-items:center; padding:18px 64px; border-bottom:1px solid var(--rule); }
+  .topbar .logo{ font-family:var(--mono); font-size:12.5px; letter-spacing:.06em; }
+  .topbar .logo .dot{ color:var(--accent); }
+  .topbar nav{ display:flex; gap:24px; align-items:center; font-family:var(--mono); font-size:12px; color:var(--soft); flex-wrap:wrap; justify-content:flex-end; }
+  .topbar nav a{ color:inherit; transition:color .15s ease; }
+  .topbar nav a:hover{ color:var(--accent); }
+  .guidebtn{ font-family:var(--mono); font-size:12px; letter-spacing:.02em; color:var(--accent); background:transparent;
+    border:0; border-bottom:1px solid var(--accent); padding:0 0 2px; cursor:pointer; }
+  .guidebtn:hover{ color:var(--accent-dark); }
+
+  .wrap{ max-width:1280px; margin:0 auto; padding:0 64px 96px; }
+
+  /* hero */
+  .hero{ padding:96px 0 48px; border-bottom:1px solid var(--rule); margin-bottom:40px; }
+  .hero .lab-el{ font-family:var(--mono); font-size:10.5px; color:var(--accent); letter-spacing:.18em; text-transform:uppercase; margin:0 0 18px; }
+  .hero h1{ font-family:var(--sans); font-weight:500; font-size:64px; line-height:1.0; letter-spacing:-.035em; margin:0 0 24px; max-width:18ch; }
+  .hero h1 .acc{ color:var(--accent); }
+  .hero .lede{ font-size:18px; line-height:1.55; color:var(--soft); margin:0; max-width:72ch; }
+  .hero .lede b{ color:var(--ink); font-weight:500; }
+
+  .lab{ display:grid; grid-template-columns:344px 1fr; gap:32px; align-items:start; }
+  @media (max-width:860px){ .lab{ grid-template-columns:1fr; } }
+
+  /* cards — flat, 1px rules, accent spine. No radius, no shadow. */
+  .card{ background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--accent); position:relative; }
+  .card .pad{ padding:24px 26px; }
+  .grouptitle{ font-family:var(--mono); font-size:10.5px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin:0 0 14px; }
+  .sub{ font-family:var(--sans); font-weight:400; text-transform:none; letter-spacing:0; color:var(--mute); }
+
+  .field label{ display:flex; justify-content:space-between; align-items:baseline; font-size:13px; color:var(--mute); margin-bottom:7px; }
+  .field label .val{ font-weight:600; color:var(--accent); font-family:var(--mono); font-size:12px; }
+  .num{ width:100%; font:inherit; font-size:15px; font-weight:500; color:var(--ink); background:var(--surface); border:1px solid var(--rule); border-radius:0; padding:9px 11px; }
+  .num:focus{ outline:none; border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
+  input:focus-visible, select:focus-visible, button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .seg{ display:flex; gap:0; background:var(--surface); border:1px solid var(--rule); padding:0; }
+  .seg button{ flex:1; font-family:var(--mono); font-size:11px; letter-spacing:.02em; color:var(--soft); background:transparent;
+    border:0; border-right:1px solid var(--rule); padding:9px 4px; cursor:pointer; }
+  .seg button:last-child{ border-right:0; }
+  .seg button:hover{ color:var(--accent); }
+  .seg button[aria-pressed="true"]{ background:var(--accent); color:#f5f5f0; }
+
+  .block + .block{ margin-top:20px; padding-top:18px; border-top:1px solid var(--rule); }
+
+  .round{ background:var(--surface-2); border:1px solid var(--rule); padding:12px 13px; margin-bottom:10px; }
+  .round .rhead{ display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .round .rname{ flex:1; min-width:0; font:inherit; font-weight:500; font-size:14px; color:var(--accent); background:transparent; border:0; border-bottom:1px solid transparent; padding:2px 0; }
+  .round .rname:hover, .round .rname:focus{ border-bottom-color:var(--rule); outline:none; }
+  .round .del{ flex:none; width:22px; height:22px; border:1px solid var(--rule); background:var(--surface); color:var(--mute); cursor:pointer; font-size:14px; line-height:1; }
+  .round .del:hover{ color:var(--red); border-color:var(--red); }
+  .rgrid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:7px; }
+  .rgrid2{ display:grid; grid-template-columns:1fr 1.15fr; gap:7px; margin-top:7px; }
+  .rgrid .mini label, .rgrid2 .mini label{ display:block; font-family:var(--mono); font-size:9.5px; color:var(--mute); margin-bottom:4px; text-transform:uppercase; letter-spacing:.1em; }
+  .rgrid .mini input, .rgrid2 .mini input, .rgrid2 .mini select{ width:100%; font:inherit; font-size:13px; font-weight:500; color:var(--ink); background:var(--surface); border:1px solid var(--rule); border-radius:0; padding:6px 7px; }
+  .rgrid .mini input:focus, .rgrid2 .mini input:focus, .rgrid2 .mini select:focus{ outline:none; border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
+  .rdir{ flex:none; font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; padding:2px 7px; white-space:nowrap; }
+
+  .addround{ width:100%; font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color:var(--accent); background:transparent; border:1px dashed #b6c2bb; padding:10px; cursor:pointer; }
+  .addround:hover{ border-color:var(--accent); background:var(--surface-2); }
+  .presets{ display:flex; gap:8px; margin-top:18px; }
+  .presets button{ flex:1; font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; cursor:pointer; padding:12px 8px; border-radius:0; }
+  .btn-primary{ background:var(--accent); color:#f5f5f0; border:1px solid var(--accent); }
+  .btn-primary:hover{ background:var(--accent-dark); border-color:var(--accent-dark); }
+  .btn-ghost{ background:var(--surface); color:var(--accent); border:1px solid var(--rule); }
+  .btn-ghost:hover{ border-color:var(--accent); }
+
+  .outputs{ display:flex; flex-direction:column; gap:24px; min-width:0; }
+
+  /* headline stats */
+  .head{ display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:0; border-top:1.5px solid var(--ink); }
+  @media (max-width:560px){ .head{ grid-template-columns:1fr 1fr; } }
+  .stat{ display:flex; flex-direction:column; background:transparent; border-right:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:20px 24px 22px 0; }
+  .stat:last-child{ border-right:0; }
+  .stat + .stat{ padding-left:24px; }
+  .stat .k{ font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--mute); text-transform:uppercase; margin-bottom:10px; }
+  .stat .v{ font-size:32px; font-weight:500; line-height:1; letter-spacing:-.02em; color:var(--ink); }
+  .stat.accent .v{ color:var(--accent); }
+  .stat .note{ font-size:12px; color:var(--mute); margin-top:auto; padding-top:9px; font-family:var(--serif); }
+  .stat .note b.down{ color:var(--red); } .stat .note b.up{ color:var(--green); }
+
+  /* chart */
+  .legend{ display:flex; flex-wrap:wrap; gap:6px 18px; margin:2px 0 18px; }
+  .legend span{ display:inline-flex; align-items:center; gap:7px; font-size:12.5px; color:var(--soft); }
+  .legend i{ width:11px; height:11px; flex:none; border:1px solid rgba(14,20,16,.12); }
+  .chart{ display:flex; align-items:flex-start; gap:12px; }
+  .col{ flex:1; display:flex; flex-direction:column; align-items:center; min-width:0; }
+  .bar{ width:100%; max-width:88px; height:194px; flex:none; display:flex; flex-direction:column-reverse; overflow:hidden; border:1px solid var(--rule); }
+  /* 2px surface gap between stacked segments (dataviz spec) */
+  .seg-h{ width:100%; transition:height .4s cubic-bezier(.22,.61,.36,1); position:relative; border-bottom:2px solid var(--surface); background-clip:padding-box; }
+  .seg-h:first-child{ border-bottom:0; }
+  .col .xlab{ margin-top:10px; font-size:12.5px; font-weight:500; color:var(--ink); text-align:center; line-height:1.2; }
+  .col .xprice{ font-family:var(--mono); font-size:10.5px; color:var(--mute); margin-top:3px; }
+  .col .xbadge{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; padding:2px 7px; margin-top:5px; }
+  .b-up{ color:var(--green); background:var(--greenbg); }
+  .b-down{ color:var(--red); background:var(--redbg); }
+  .b-flat{ color:var(--mute); background:var(--surface-2); }
+
+  /* tables */
+  .tablewrap{ overflow-x:auto; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  thead th{ font-family:var(--mono); font-size:9.5px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--mute); text-align:right; padding:0 0 10px 14px; border-bottom:1.5px solid var(--ink); white-space:nowrap; }
+  thead th:first-child{ text-align:left; padding-left:0; }
+  tbody td{ padding:9px 0 9px 14px; border-bottom:1px solid var(--line-soft); text-align:right; white-space:nowrap; vertical-align:top; }
+  tbody td:first-child{ text-align:left; padding-left:0; font-weight:500; }
+  tbody td .sw{ display:inline-block; width:9px; height:9px; margin-right:8px; vertical-align:baseline; border:1px solid rgba(14,20,16,.12); }
+  tbody tr.total td{ border-top:1.5px solid var(--ink); border-bottom:0; font-weight:600; padding-top:11px; }
+  tbody tr.founders td:first-child{ font-weight:600; }
+  .htype{ font-family:var(--serif); font-size:11.5px; color:var(--mute); font-weight:400; margin-top:2px; padding-left:17px; }
+  .needdate{ color:var(--accent); font-style:italic; font-size:11.5px; }
+  .tnote{ font-family:var(--serif); font-size:12.5px; color:var(--mute); margin:14px 0 0; max-width:70ch; }
+  .costrows{ display:flex; flex-direction:column; gap:0; border-top:1px solid var(--rule); }
+  .costrow{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:14px 0; border-bottom:1px solid var(--line-soft); }
+  .costrow:last-child{ border-bottom:0; }
+  .costrow .cn{ font-weight:500; color:var(--ink); font-size:14px; min-width:0; }
+  .costrow .cn small{ display:block; font-family:var(--serif); font-weight:400; color:var(--mute); font-size:12px; margin-top:3px; line-height:1.4; }
+  .costrow .cv{ font-family:var(--mono); font-weight:500; font-size:13px; white-space:nowrap; text-align:right; flex:none; }
+  .costrow .cv.bad{ color:var(--red); } .costrow .cv.zero{ color:var(--mute); }
+
+  .err{ display:none; background:var(--redbg); border:1px solid var(--red); border-left-width:3px; color:var(--red); padding:12px 14px; font-size:13.5px; }
+  .err.show{ display:block; }
+
+  /* modal */
+  .modal{ position:fixed; inset:0; z-index:60; display:flex; align-items:flex-start; justify-content:center; padding:5vh 18px; overflow:auto; background:rgba(14,20,16,.55); }
+  .modal[hidden]{ display:none; }
+  .modal-card{ position:relative; background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--accent); max-width:760px; width:100%; padding:32px 36px 40px; }
+  .modal-close{ position:absolute; top:14px; right:14px; width:32px; height:32px; border:1px solid var(--rule); background:var(--surface); color:var(--mute); font-size:18px; line-height:1; cursor:pointer; }
+  .modal-close:hover{ border-color:var(--accent); color:var(--accent); }
+  .modal-card h2{ font-family:var(--sans); font-size:28px; font-weight:500; letter-spacing:-.02em; color:var(--ink); margin:0 0 6px; }
+  .modal-card .msub{ font-family:var(--serif); color:var(--mute); font-size:14px; margin:0 0 10px; }
+  .modal-card h3{ font-family:var(--mono); font-size:10.5px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin:32px 0 13px; }
+  .modal-card p{ color:var(--soft); font-size:14.5px; line-height:1.62; margin:0 0 12px; max-width:68ch; }
+  .modal-card p b{ color:var(--ink); font-weight:500; }
+  .fx{ font-family:var(--mono); font-size:12.5px; font-style:normal; color:var(--accent); background:var(--surface-2); border:1px solid var(--rule); padding:2px 7px; white-space:nowrap; }
+  dl.defs{ margin:0; display:grid; grid-template-columns:1fr; gap:0; border-top:1px solid var(--rule); }
+  dl.defs dt{ font-weight:500; font-size:14px; color:var(--ink); padding-top:13px; }
+  dl.defs dd{ margin:3px 0 0; font-family:var(--serif); font-size:13.5px; color:var(--soft); line-height:1.55; padding-bottom:13px; border-bottom:1px solid var(--line-soft); }
+  .trylist{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:13px; }
+  .trylist li{ display:flex; gap:12px; font-size:14px; color:var(--soft); line-height:1.55; }
+  .trylist li .n{ flex:none; width:22px; height:22px; background:var(--surface-2); border:1px solid var(--rule); color:var(--accent); font-family:var(--mono); font-size:11px; display:grid; place-items:center; }
+
+  /* reset confirmation */
+  .cl-backdrop{ position:fixed; inset:0; z-index:1000; background:rgba(14,20,16,.55); display:flex; align-items:center; justify-content:center; padding:20px; }
+  .cl-modal{ background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--accent); max-width:440px; width:100%; padding:26px 28px; }
+  .cl-modal-t{ margin:0 0 10px; font-size:20px; font-weight:500; letter-spacing:-.01em; color:var(--ink); }
+  .cl-modal-b{ margin:0 0 20px; font-family:var(--serif); font-size:14px; color:var(--soft); line-height:1.5; }
+  .cl-modal-btns{ display:flex; gap:10px; justify-content:flex-end; }
+  .cl-modal-btns button{ font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; padding:11px 18px; cursor:pointer; border-radius:0; }
+  .cl-btn-cancel{ border:1px solid var(--rule); background:var(--surface); color:var(--soft); }
+  .cl-btn-cancel:hover{ border-color:var(--accent); color:var(--accent); }
+  .cl-btn-yes{ border:1px solid var(--red); background:var(--red); color:#f5f5f0; }
+  .cl-btn-yes:hover{ background:#7f2620; border-color:#7f2620; }
+  .cl-laphint{ display:flex; gap:9px; align-items:center; margin:0 0 20px; padding:11px 14px; background:var(--surface-2); border:1px solid var(--rule); border-left:3px solid var(--accent); color:var(--soft); font-size:13px; }
+
+  footer.site{ margin-top:56px; padding-top:28px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--mute); letter-spacing:.06em; }
+  footer.site a:hover{ color:var(--accent); }
+
+  @media (max-width:768px){
+    .topbar{ padding:14px 24px; }
+    .topbar nav{ gap:14px; font-size:11px; }
+    .wrap{ padding:0 24px 56px; }
+    .hero{ padding:56px 0 32px; }
+    .hero h1{ font-size:40px; }
+    .hero .lede{ font-size:16px; }
+    .head{ grid-template-columns:1fr; }
+    .stat{ border-right:0; padding:18px 0; }
+    .stat + .stat{ padding-left:0; }
+    .card .pad{ padding:20px; }
+    .modal-card{ padding:24px 22px 30px; }
+    footer.site{ flex-direction:column; gap:8px; }
+  }
+  @media (prefers-reduced-motion:reduce){ .seg-h{ transition:none; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">SC<span class="dot">.</span> / cap table</div>
+  <nav>
+    <a href="/">&larr; chatonsky.com</a>
+    <a href="/writing">Writings, Talks &amp; Things</a>
+    <button class="guidebtn" id="guideBtn" type="button">How it works</button>
+    <a href="/#enquiries">Contact</a>
+  </nav>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="lab-el">Thing / 03 &middot; Free to use</p>
+    <h1>Cap table, dilution <span class="acc">and returns.</span></h1>
+    <p class="lede">Build a company round by round and watch who owns what as the money comes in. Price a round below the last and it turns <b>red</b> &mdash; a down round, where anti-dilution kicks in. Set each round&rsquo;s dates and share type, then run an exit to see every investor&rsquo;s proceeds, multiple and IRR.</p>
+  </div>
+
+  <div class="lab">
+    <section class="card" aria-label="Deal controls">
+      <div class="pad">
+        <div class="block" style="border-top:0;margin-top:0;padding-top:0">
+          <div class="seg" id="viewSeg" role="group" aria-label="Mode">
+            <button type="button" data-view="build" aria-pressed="true">Build a cap table</button>
+            <button type="button" data-view="solve">Back-solve</button>
+          </div>
+        </div>
+        <div id="buildCtl">
+        <div class="block">
+          <div class="field"><label for="founders">Founders&rsquo; shares <span class="val"><span id="foundersV">8.0</span>m</span></label><input class="num" type="number" id="founders" min="0" step="0.5" value="8"></div>
+        </div>
+
+        <div class="block">
+          <p class="grouptitle">Anti-dilution on down rounds</p>
+          <div class="seg" id="adSeg" role="group" aria-label="Anti-dilution mode">
+            <button type="button" data-ad="none">None</button>
+            <button type="button" data-ad="wa" aria-pressed="true">Weighted average</button>
+            <button type="button" data-ad="ratchet">Full ratchet</button>
+          </div>
+          <p class="sub" style="font-size:12.5px;margin:10px 0 0">Protects every earlier investor whenever a later round prices below what they paid.</p>
+        </div>
+
+        <div class="block">
+          <p class="grouptitle">Option pool created</p>
+          <div class="seg" id="poolSeg" role="group" aria-label="Option pool placement">
+            <button type="button" data-pool="pre" aria-pressed="true">Pre-money</button>
+            <button type="button" data-pool="post">Post-money</button>
+          </div>
+          <p class="sub" style="font-size:12.5px;margin:10px 0 0">Pre-money: the existing holders pay for the pool. Post-money: everyone, the new investor included, shares it. In a down round, a new pool is always created post-money.</p>
+        </div>
+
+        <div class="block">
+          <p class="grouptitle">Financing rounds</p>
+          <div id="rounds"></div>
+          <button class="addround" type="button" id="addRound">+ Add a round</button>
+        </div>
+
+        <div class="block">
+          <p class="grouptitle">Exit</p>
+          <div class="rgrid2" style="grid-template-columns:1fr 1fr">
+            <div class="mini"><label for="exit">Exit equity value $m</label><input type="number" min="0" step="10" value="200" id="exit"></div>
+            <div class="mini"><label for="exitDate">Exit date</label><input type="date" value="2028-01-01" id="exitDate"></div>
+          </div>
+          <p class="sub" style="font-size:12.5px;margin:10px 0 0">A trade sale or IPO. Proceeds run through the liquidation waterfall. <b>IRR</b> needs a date on every round <em>and</em> on the exit &mdash; leave one blank and its IRR stays empty.</p>
+        </div>
+
+        <div class="presets">
+          <button class="btn-primary" type="button" id="loadExample">Load an example</button>
+          <button class="btn-ghost" type="button" id="reset">Reset</button>
+        </div>
+        <p class="sub" style="font-size:11.5px;margin:10px 0 0;text-align:center">Example = a 3-round company with a down round &middot; Reset = start from just the founders</p>
+        </div><!-- /buildCtl -->
+
+        <div id="solveCtl" style="display:none">
+          <div class="block" style="border-top:0;margin-top:0;padding-top:0">
+            <p class="grouptitle">Back-solve a valuation</p>
+            <p class="sub" style="font-size:12.5px;margin:0 0 14px">Start from the exit you&rsquo;re targeting and the return you need, and work back to the pre-money you can pay &mdash; the standard venture method.</p>
+            <div class="rgrid2" style="grid-template-columns:1fr 1fr">
+              <div class="mini"><label for="sInv">Investment $m</label><input type="number" min="0" step="0.5" value="1" id="sInv"></div>
+              <div class="mini"><label for="sExist">Existing shares (m)</label><input type="number" min="0" step="1" value="100" id="sExist"></div>
+              <div class="mini"><label for="sExit">Exit value $m</label><input type="number" min="0" step="1" value="10" id="sExit"></div>
+              <div class="mini"><label for="sYears">Years to exit</label><input type="number" min="0" step="1" value="5" id="sYears"></div>
+              <div class="mini"><label for="sIrr">Required IRR %</label><input type="number" min="0" step="5" value="30" id="sIrr"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="outputs" aria-live="polite">
+      <div id="buildOut">
+      <div class="err" id="err"></div>
+
+      <div class="head">
+        <div class="stat accent"><div class="k">Founders end with</div><div class="v" id="fEnd">&mdash;</div><div class="note" id="fEndNote"></div></div>
+        <div class="stat"><div class="k">Capital raised</div><div class="v" id="raisedTot">&mdash;</div><div class="note" id="raisedNote"></div></div>
+        <div class="stat"><div class="k">Founders&rsquo; exit</div><div class="v" id="fProceeds">&mdash;</div><div class="note" id="fProcNote"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="pad">
+          <p class="grouptitle">What the investor terms cost the founders <span class="sub">&mdash; vs a clean, all-common deal</span></p>
+          <div class="costrows" id="costRows"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pad">
+          <p class="grouptitle">Ownership at each stage</p>
+          <div class="legend" id="legend"></div>
+          <div class="chart" id="chart"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pad">
+          <p class="grouptitle">Cap table <span class="sub">&mdash; % owned after each round</span></p>
+          <div class="tablewrap"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+          <p class="tnote">&ldquo;Value&rdquo; = shares &times; the latest round&rsquo;s price (as-converted). It isn&rsquo;t the economic payout once liquidation preferences differ &mdash; see the exit table below for that.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pad">
+          <p class="grouptitle">At exit <span class="sub">&mdash; the liquidation waterfall, and each cheque&rsquo;s return</span></p>
+          <div class="tablewrap"><table><thead><tr><th>Holder</th><th>Owns</th><th>Invested</th><th>Proceeds</th><th>Multiple</th><th>IRR</th></tr></thead><tbody id="exitBody"></tbody></table></div>
+        </div>
+      </div>
+      </div><!-- /buildOut -->
+
+      <div id="solveOut" style="display:none">
+        <div class="head">
+          <div class="stat accent"><div class="k">Pre-money valuation</div><div class="v" id="sPre">&mdash;</div><div class="note" id="sPreNote">what you can pay today</div></div>
+          <div class="stat"><div class="k">Post-money</div><div class="v" id="sPost">&mdash;</div><div class="note">pre + investment</div></div>
+          <div class="stat"><div class="k">VC ownership at exit</div><div class="v" id="sOwn">&mdash;</div><div class="note" id="sOwnNote"></div></div>
+        </div>
+        <div class="card">
+          <div class="pad">
+            <p class="grouptitle">Working backwards from the target return</p>
+            <div class="err" id="sErr" style="margin-bottom:16px"></div>
+            <div class="tablewrap"><table><tbody id="sBody"></tbody></table></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="site">
+    <span>Stephane D. Chatonsky</span>
+    <span><a href="/">chatonsky.com</a> &middot; <a href="mailto:stephane@chatonsky.com">stephane@chatonsky.com</a></span>
+  </footer>
+</div>
+
+<div class="modal" id="guide" hidden aria-modal="true" role="dialog" aria-label="How this tool works">
+  <div class="modal-card">
+    <button class="modal-close" id="guideClose" type="button" aria-label="Close">&times;</button>
+    <h2>How this tool works</h2>
+    <p class="msub">Everything the panel computes, and the vocabulary behind it.</p>
+
+    <h3>The maths</h3>
+    <p>Each round is priced off the shares already outstanding: <span class="fx">price = pre-money &divide; shares before the round</span>, and the new investor&rsquo;s stake is <span class="fx">investment &divide; post-money</span>. Add rounds and the bars redraw the ownership split after every raise.</p>
+    <p>A new <b>option pool</b> can be created two ways. <b>Pre-money</b>, it comes out of the existing holders before the money lands &mdash; the classic &ldquo;option pool shuffle&rdquo; that quietly costs founders. <b>Post-money</b>, everyone (the new investor included) is diluted by it. The toggle switches between the two, and each round&rsquo;s pool is shown as its own hatched slice.</p>
+    <p>A <b>down round</b> is any round priced below an earlier one &mdash; its bar and its round card turn red. That&rsquo;s when an <b>anti-dilution</b> clause fires, for every investor whose price was higher. <b>Full ratchet</b> resets their price all the way to the new low &mdash; the old round and the new price are solved <em>together</em>, so it can gut the founders. <b>Broad-based weighted average</b> only nudges their price, scaled by how small the down round is versus the whole company: <span class="fx">new price = old &times; (A + B) &divide; (A + C)</span> &mdash; far gentler. <b>None</b> lets earlier investors dilute like anyone else. Only <b>preferred</b> shares carry anti-dilution &mdash; a round you set as <b>ordinary</b> just dilutes like everyone else.</p>
+    <p>At <b>exit</b>, proceeds run a 1&times; liquidation waterfall (preferences rank <em>pari passu</em>): <b>non-participating</b> preferred take the greater of their money back or converting to common; <b>participating</b> preferred take their money back <em>and</em> share the rest; <b>ordinary</b> shares just split pro-rata. The <b>option pool</b> here is treated as if fully granted and exercised at a nil strike, so it takes proceeds like common &mdash; a simplification (an unallocated reserve wouldn&rsquo;t). Each cheque&rsquo;s <b>IRR</b> is then annualised from its round&rsquo;s date to the exit date: <span class="fx">(proceeds &divide; invested) ^ (1 &divide; years) &minus; 1</span>.</p>
+
+    <h3>Definitions</h3>
+    <dl class="defs">
+      <dt>Pre-money / post-money valuation</dt>
+      <dd>Pre-money is what a round agrees the company is worth <em>before</em> the new cash; post-money = pre-money + investment. The investor owns investment &divide; post-money.</dd>
+      <dt>Price per share</dt>
+      <dd>Post-money valuation &divide; fully-diluted shares. Every share in the same round is bought at this price.</dd>
+      <dt>Fully-diluted shares</dt>
+      <dd>All shares counted as if every option and convertible were issued &mdash; the denominator for ownership %.</dd>
+      <dt>Option pool</dt>
+      <dd>Shares reserved for future employees. Placed pre-money it dilutes only the existing holders; post-money it dilutes everyone. At exit this tool assumes it&rsquo;s granted and exercised at a nil strike.</dd>
+      <dt>Up round / down round</dt>
+      <dd>A round priced above (up) or below (down) the previous round&rsquo;s share price. Anti-dilution only ever fires on a down round.</dd>
+      <dt>Anti-dilution &mdash; full ratchet</dt>
+      <dd>Reprices earlier shares as if they had paid the new, lower price. Maximum protection for the investor, maximum pain for founders.</dd>
+      <dt>Anti-dilution &mdash; broad-based weighted average</dt>
+      <dd>A partial reprice weighted by the size of the down round against the whole share base. The market standard.</dd>
+      <dt>Liquidation preference (1&times;)</dt>
+      <dd>The first claim on exit proceeds &mdash; preferred holders get their money back before common sees a cent. Here it is 1&times; the amount invested.</dd>
+      <dt>Non-participating preferred</dt>
+      <dd>Takes <em>either</em> its 1&times; money back <em>or</em> converts to common and shares pro-rata &mdash; whichever is larger. No double-dip.</dd>
+      <dt>Participating preferred</dt>
+      <dd>Takes its 1&times; money back <em>and then also</em> shares the remaining proceeds pro-rata. The &ldquo;double-dip.&rdquo;</dd>
+      <dt>Ordinary (common)</dt>
+      <dd>No preference &mdash; just splits proceeds by ownership. What founders and the option pool hold.</dd>
+      <dt>As-converted</dt>
+      <dd>Treating preferred as if converted to common. A non-participating holder converts when that beats taking its preference.</dd>
+      <dt>Exit multiple</dt>
+      <dd>Proceeds &divide; amount invested. A &ldquo;3&times;&rdquo; means you got three times your money back.</dd>
+      <dt>IRR</dt>
+      <dd>The annualised return that turns the investment into the proceeds over the holding period &mdash; the multiple spread across time. It needs a date on both the round and the exit; without both, it can&rsquo;t be computed.</dd>
+    </dl>
+
+    <h3>Things to try</h3>
+    <ul class="trylist">
+      <li><span class="n">1</span><span>With the example loaded, flip anti-dilution between <b>None &rarr; Weighted average &rarr; Full ratchet</b> and watch the founders&rsquo; final % &mdash; same down round, very different outcomes.</span></li>
+      <li><span class="n">2</span><span>Set the Series B pre-money lower and lower until its card goes <b>red</b>, and see how much harder full ratchet bites than weighted average.</span></li>
+      <li><span class="n">3</span><span>On the exit table, switch a round between <b>non-participating</b>, <b>participating</b> and <b>ordinary</b> &mdash; then drop the exit value low and watch the preference protect the downside.</span></li>
+      <li><span class="n">4</span><span>Push the exit date out by a few years. The multiple doesn&rsquo;t move, but every investor&rsquo;s <b>IRR</b> falls &mdash; the same return, earned more slowly.</span></li>
+    </ul>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+
+  // ---- guide modal ----
+  var guide=$('guide');
+  function openGuide(){ guide.hidden=false; document.body.style.overflow='hidden'; }
+  function closeGuide(){ guide.hidden=true; document.body.style.overflow=''; }
+  $('guideBtn').addEventListener('click',openGuide);
+  $('guideClose').addEventListener('click',closeGuide);
+  guide.addEventListener('click',function(e){ if(e.target===guide) closeGuide(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!guide.hidden) closeGuide(); });
+
+  var ROUND_COLORS=['--c1','--c2','--c3','--c4','--c5','--c6'];
+  var adMode='wa';
+  var poolMode='pre';
+  var rounds=[];
+  var uid=0;
+  var view='build';
+  function show(id,on){ $(id).style.display=on?'':'none'; }
+
+  function defaultRounds(){ return [
+    {id:++uid,name:'Seed',date:'2021-03-01',pre:4,inv:2,pool:0,secType:'nonpart'},
+    {id:++uid,name:'Series A',date:'2022-09-01',pre:18,inv:6,pool:10,secType:'nonpart'},
+    {id:++uid,name:'Series B',date:'2024-03-01',pre:12,inv:4,pool:0,secType:'nonpart'}
+  ];}
+
+  function fmtPct(x){return (x*100).toFixed(1)+'%';}
+  function fmtM(x){return '$'+x.toFixed(1)+'m';}
+  function fmtP(x){return '$'+x.toFixed(2);}
+  function fmtSh(x){return x.toFixed(2);}
+  function fmtMult(x){return x.toFixed(2)+'×';}
+  function fmtIRR(x){return (x*100).toFixed(1)+'%';}
+  var DASH='<span style="color:var(--ink-faint)">—</span>';
+
+  function yrsBetween(d0,d1){ var a=new Date(d0), b=new Date(d1); if(isNaN(a.getTime())||isNaN(b.getTime())) return null; return (b-a)/(365.25*86400000); }
+  function irrOf(inv,proc,yrs){ if(!(inv>0)||yrs==null||!(yrs>0)) return null; if(proc<=0) return -1; return Math.pow(proc/inv,1/yrs)-1; }
+  function addMonths(iso,m){ var d=new Date(iso); if(isNaN(d.getTime())) return ''; d.setMonth(d.getMonth()+m); return d.toISOString().slice(0,10); }
+
+  // ---- engine: cap table over rounds ----
+  function compute(founders, rlist, mode, poolMode){
+    var common=founders, pools=[], prefs=[]; // pools:{id,name,shares}  prefs:{id,name,D,cp,shares}
+    var stages=[]; var invalid=null;
+    function poolSum(){ return pools.reduce(function(a,p){return a+p.shares;},0); }
+    function total(){ return common+poolSum()+prefs.reduce(function(a,p){return a+p.shares;},0); }
+    function snap(label, extra){
+      var T=total(), hold={F:common/T};
+      prefs.forEach(function(p){ hold['r'+p.id]=p.shares/T; });
+      pools.forEach(function(p){ hold['p'+p.id]=p.shares/T; });
+      stages.push(Object.assign({label:label,total:T,hold:hold,common:common,prefs:prefs.map(function(p){return{id:p.id,name:p.name,shares:p.shares};}),pools:pools.map(function(p){return{id:p.id,name:p.name,shares:p.shares};})}, extra||{}));
+    }
+    snap('Founding');
+    for(var k=0;k<rlist.length;k++){
+      var r=rlist[k];
+      var FDpre=total(); var P=+r.pre, I=+r.inv, q=(+r.pool||0)/100;
+      if(!(P>0)||!(I>=0)||!(FDpre>0)){ invalid={round:r.name,msg:'Give this round a positive pre-money and investment.'}; snap(r.name,{invalid:true}); continue; }
+      var M=P+I, invPct=I/M, naive=P/FDpre;
+      var willAdj = mode!=='none' && prefs.some(function(p){return p.secType!=='ord' && p.cp>naive+1e-12;});
+      var price, invShares, poolAdd=0, ad='';
+      if(willAdj){
+        if(mode==='ratchet'){
+          var p=naive, ok=true;
+          for(var it=0;it<20;it++){
+            var sumD=0, nonAdj=common+poolSum();
+            prefs.forEach(function(pf){ if(pf.secType!=='ord' && pf.cp>p+1e-12){sumD+=pf.D;} else {nonAdj+=pf.shares;} });
+            var pn=(P-sumD)/nonAdj;
+            if(!(pn>0)){ ok=false; break; }
+            if(Math.abs(pn-p)<1e-10){ p=pn; break; }
+            p=pn;
+          }
+          if(!ok){ invalid={round:r.name,msg:'This down round is deeper than the capital the ratchet must convert — the price goes negative. Raise the pre-money.'}; snap(r.name,{invalid:true}); continue; }
+          prefs.forEach(function(pf){ if(pf.secType!=='ord' && pf.cp>p+1e-12){ pf.shares=pf.D/p; pf.cp=p; } });
+          price=p; invShares=I/p; ad='full ratchet';
+        } else {
+          // weighted-average, FIXED-OWNERSHIP: the new investor still lands on invest ÷ post-money;
+          // earlier preferred are repriced by the broad-based WA formula and founders/common absorb it.
+          // Closed form: pw = (P − I·K) / (nonAdj + A·K), with A = FDpre and K = Σ shares/(A + I/CP1) over protected prefs.
+          var A=FDpre, K=0, nonAdj=common+poolSum();
+          prefs.forEach(function(pf){
+            if(pf.secType!=='ord' && pf.cp>naive+1e-12){ K+=pf.shares/(A + I/pf.cp); }
+            else { nonAdj+=pf.shares; }
+          });
+          var pw=(P - I*K)/(nonAdj + A*K);
+          if(!(pw>0)){ invalid={round:r.name,msg:'This weighted-average down round can’t be priced at a positive share price — raise the pre-money.'}; snap(r.name,{invalid:true}); continue; }
+          prefs.forEach(function(pf){ if(pf.secType!=='ord' && pf.cp>naive+1e-12){ var cp2=pf.cp*(A+I/pf.cp)/(A+I/pw); pf.shares=pf.D/cp2; pf.cp=cp2; } });
+          price=pw; invShares=I/pw; ad='weighted-average';
+        }
+      } else if(q>0 && poolMode==='post'){
+        var FD0=FDpre/(1-invPct); price=M/FD0; invShares=invPct*FD0; poolAdd=q*FD0/(1-q);
+      } else {
+        var denom=1-invPct-q;
+        if(denom<=0){ invalid={round:r.name,msg:'Investor % + option pool % is 100% or more — lower the pool or the cheque.'}; snap(r.name,{invalid:true}); continue; }
+        var FDpost=FDpre/denom; price=M/FDpost; poolAdd=q*FDpost; invShares=invPct*FDpost;
+      }
+      var prev=null; for(var s=stages.length-1;s>=0;s--){ if(stages[s].price!=null){prev=stages[s].price;break;} }
+      var dir = prev==null?'first':(price>prev*(1+1e-9)?'up':(price<prev*(1-1e-9)?'down':'flat'));
+      // a new pool must still form in an anti-dilution round — created post-money (dilutes everyone, incl. the new investor)
+      if(willAdj && q>0){ var Tb=common+poolSum()+prefs.reduce(function(a,p){return a+p.shares;},0)+invShares; poolAdd=q*Tb/(1-q); }
+      if(poolAdd>0) pools.push({id:r.id,name:r.name,shares:poolAdd});
+      prefs.push({id:r.id,name:r.name,D:I,cp:price,shares:invShares,secType:r.secType||'nonpart'});
+      snap(r.name,{price:price,dir:dir,ad:ad,poolHere:poolAdd});
+    }
+    return {stages:stages, invalid:invalid};
+  }
+
+  // ---- exit: 1x liquidation waterfall, pari passu ----
+  function waterfall(holders, last, clean, E){
+    var parts=holders.map(function(h){
+      if(h.key==='F') return {key:h.key,kind:'common',shares:last.common};
+      if(h.key.charAt(0)==='p'){ var pl=last.pools.find(function(x){return 'p'+x.id===h.key;}); return {key:h.key,kind:'common',shares:pl?pl.shares:0}; }
+      var pr=last.prefs.find(function(x){return 'r'+x.id===h.key;});
+      if(!pr) return {key:h.key,kind:'common',shares:0}; // round never issued (invalid input) → no shares, no preference
+      var rd=clean.find(function(x){return 'r'+x.id===h.key;});
+      var st=rd?(rd.secType||'nonpart'):'nonpart'; var shares=pr.shares, inv=rd?rd.inv:0;
+      if(st==='ord') return {key:h.key,kind:'common',shares:shares};
+      return {key:h.key,kind:'pref',secType:st,shares:shares,pref:inv,convert:false};
+    });
+    function shares_in_pool(p){ return p.kind==='common'||p.convert||(p.kind==='pref'&&p.secType==='part'); }
+    function distribute(){
+      var res={}; parts.forEach(function(p){res[p.key]=0;});
+      var takers=parts.filter(function(p){return p.kind==='pref'&&!p.convert;});
+      var prefTotal=takers.reduce(function(a,p){return a+p.pref;},0);
+      if(E<=prefTotal){ takers.forEach(function(p){ res[p.key]=prefTotal>0?E*(p.pref/prefTotal):0; }); return res; }
+      takers.forEach(function(p){ res[p.key]=p.pref; });
+      var R=E-prefTotal, poolSh=0;
+      parts.forEach(function(p){ if(shares_in_pool(p)) poolSh+=p.shares; });
+      if(poolSh>0){ parts.forEach(function(p){ if(shares_in_pool(p)) res[p.key]+=R*(p.shares/poolSh); }); }
+      else if(R>0 && prefTotal>0){ takers.forEach(function(p){ res[p.key]+=R*(p.pref/prefTotal); }); } // no common to absorb the residual → keep it with the pref-takers so proceeds still conserve
+      return res;
+    }
+    for(var iter=0;iter<16;iter++){
+      var changed=false;
+      parts.forEach(function(p){
+        if(p.kind==='pref'&&p.secType==='nonpart'){
+          var was=p.convert;
+          p.convert=false; var a=distribute()[p.key];
+          p.convert=true;  var b=distribute()[p.key];
+          p.convert=b>a+1e-9;
+          if(p.convert!==was) changed=true;
+        }
+      });
+      if(!changed) break;
+    }
+    var d=distribute();
+    d.__conv={}; parts.forEach(function(p){ if(p.kind==='pref') d.__conv[p.key]=!!p.convert; });
+    return d;
+  }
+
+  // ---- render ----
+  function roundColorVar(idx){ return ROUND_COLORS[idx % ROUND_COLORS.length]; }
+  function holderKeys(stg, cl){ var hs=[{key:'F'}]; cl.forEach(function(r){ hs.push({key:'r'+r.id}); if((stg.pools||[]).some(function(x){return x.id===r.id;})) hs.push({key:'p'+r.id}); }); return hs; }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  function renderRoundsUI(){
+    var box=$('rounds'); box.innerHTML='';
+    rounds.forEach(function(r,idx){
+      var d=document.createElement('div'); d.className='round';
+      d.innerHTML='<div class="rhead"><input class="rname" value="'+esc(r.name)+'" data-id="'+r.id+'" data-k="name" aria-label="Round name"><span class="rdir" data-dir-for="'+r.id+'"></span><button class="del" type="button" data-del="'+r.id+'" title="Remove round">×</button></div>'+
+        '<div class="rgrid">'+
+        '<div class="mini"><label>Pre-money $m</label><input type="number" min="0" step="0.5" value="'+r.pre+'" data-id="'+r.id+'" data-k="pre" aria-label="Pre-money $m"></div>'+
+        '<div class="mini"><label>Invest $m</label><input type="number" min="0" step="0.5" value="'+r.inv+'" data-id="'+r.id+'" data-k="inv" aria-label="Investment $m"></div>'+
+        '<div class="mini"><label>New pool %</label><input type="number" min="0" max="40" step="1" value="'+r.pool+'" data-id="'+r.id+'" data-k="pool" aria-label="New pool %"></div>'+
+        '</div>'+
+        '<div class="rgrid2">'+
+        '<div class="mini"><label>Date</label><input type="date" value="'+esc(r.date||'')+'" data-id="'+r.id+'" data-k="date" aria-label="Round date"></div>'+
+        '<div class="mini"><label>Investor shares</label><select data-id="'+r.id+'" data-k="secType" aria-label="Security type">'+
+          '<option value="nonpart"'+(r.secType==='nonpart'?' selected':'')+'>Non-part. preferred</option>'+
+          '<option value="part"'+(r.secType==='part'?' selected':'')+'>Participating pref.</option>'+
+          '<option value="ord"'+(r.secType==='ord'?' selected':'')+'>Ordinary</option>'+
+        '</select></div>'+
+        '</div>';
+      box.appendChild(d);
+    });
+    box.querySelectorAll('input,select').forEach(function(inp){
+      var handler=function(){ var r=rounds.find(function(x){return x.id==inp.dataset.id;}); if(!r) return; r[inp.dataset.k]=inp.value; render(); };
+      inp.addEventListener('input',handler);
+      inp.addEventListener('change',handler);
+    });
+    box.querySelectorAll('[data-del]').forEach(function(b){
+      b.addEventListener('click',function(){ rounds=rounds.filter(function(x){return x.id!=b.dataset.del;}); renderRoundsUI(); render(); });
+    });
+  }
+
+  function render(){
+    var founders=parseFloat($('founders').value)||0;
+    $('foundersV').textContent=founders.toFixed(1);
+    var clean=rounds.map(function(r){return {id:r.id,name:r.name,date:r.date,pre:parseFloat(r.pre)||0,inv:parseFloat(r.inv)||0,pool:parseFloat(r.pool)||0,secType:r.secType||'nonpart'};});
+    var res=compute(founders, clean, adMode, poolMode);
+    var err=$('err');
+    if(founders<=0){ err.className='err show'; err.textContent='Give the founders some starting shares to build on.'; }
+    else if(res.invalid){ err.className='err show'; err.textContent=res.invalid.round+': '+res.invalid.msg; }
+    else err.className='err';
+
+    var stages=res.stages;
+    var last=stages[stages.length-1];
+
+    // holder identity + colours: Founders, then per round its investor + its own pool slice
+    var finalPools=last.pools||[];
+    var holders=[{key:'F',label:'Founders',color:'var(--c-found)'}];
+    clean.forEach(function(r,idx){
+      holders.push({key:'r'+r.id,label:r.name,color:'var('+roundColorVar(idx)+')'});
+      if(finalPools.some(function(x){return x.id===r.id;})) holders.push({key:'p'+r.id,label:'Option Pool ('+r.name+')',color:'repeating-linear-gradient(45deg, var('+roundColorVar(idx)+') 0 3px, #ffffff 3px 5px)'});
+    });
+
+    // legend
+    $('legend').innerHTML=holders.map(function(h){return '<span><i style="background:'+h.color+'"></i>'+esc(h.label)+'</span>';}).join('');
+
+    // chart
+    $('chart').innerHTML=stages.map(function(st){
+      var segs=holders.map(function(h){
+        var v=st.hold[h.key]||0; if(v<=0) return '';
+        return '<div class="seg-h" style="height:'+(v*100).toFixed(2)+'%;background:'+h.color+'" title="'+esc(h.label)+' '+fmtPct(v)+'"></div>';
+      }).join('');
+      var badge = st.dir&&st.dir!=='first' ? '<div class="xbadge b-'+st.dir+'">'+(st.dir==='up'?'up round':st.dir==='down'?(st.ad?'down · '+(st.ad==='full ratchet'?'ratchet':'wtd avg'):'down round'):'flat')+'</div>' : (st.price!=null?'<div class="xbadge b-flat">first</div>':'');
+      var price = st.price!=null? '<div class="xprice">'+fmtP(st.price)+'/sh</div>' : (st.label==='Founding'?'<div class="xprice">—</div>':'');
+      return '<div class="col"><div class="bar">'+segs+'</div><div class="xlab">'+esc(st.label)+'</div>'+price+badge+'</div>';
+    }).join('');
+
+    // per-round up/down badges in the editor cards
+    clean.forEach(function(r,idx){
+      var stg=stages[idx+1];
+      var el=document.querySelector('.rdir[data-dir-for="'+r.id+'"]');
+      if(!el) return;
+      var dir=stg&&stg.price!=null?stg.dir:null;
+      if(!dir||dir==='first'){ el.textContent=''; el.className='rdir'; }
+      else if(dir==='up'){ el.textContent='↑ up'; el.className='rdir b-up'; }
+      else if(dir==='down'){ el.textContent='↓ down'; el.className='rdir b-down'; }
+      else { el.textContent='flat'; el.className='rdir b-flat'; }
+    });
+
+    // exit inputs
+    var exitVal=parseFloat($('exit').value)||0;
+    var exitDate=$('exitDate').value;
+    var lastPriced=null; for(var si=stages.length-1;si>=0;si--){ if(stages[si].price!=null){lastPriced=stages[si];break;} }
+    var modelOk = founders>0 && !res.invalid;
+    var dist = modelOk ? waterfall(holders, last, clean, exitVal) : {};
+
+    // headline
+    var fEnd=last.hold.F||0;
+    $('fEnd').textContent=fmtPct(fEnd);
+    var raised=clean.reduce(function(a,r){return a+r.inv;},0);
+    $('raisedTot').textContent=fmtM(raised);
+    $('raisedNote').textContent=clean.length+(clean.length===1?' round':' rounds');
+    var fProceeds=dist['F']||0;
+    $('fProceeds').textContent=modelOk?fmtM(fProceeds):'—';
+    $('fProcNote').textContent='of a '+fmtM(exitVal)+' exit';
+
+    // founders end note
+    var firedDown = stages.some(function(st){return st.ad;});
+    $('fEndNote').textContent = clean.length ? ('down from 100% over '+clean.length+(clean.length===1?' round':' rounds')) : 'from 100.0% at founding';
+
+    // what the investor-friendly terms cost the founders, in points and dollars
+    if(modelOk){
+      var noneRes = adMode!=='none' ? compute(founders, clean, 'none', poolMode) : res;
+      var noneLast = noneRes.stages[noneRes.stages.length-1];
+      var adPts = ((noneLast.hold.F||0) - fEnd)*100;
+      var adDol = (waterfall(holderKeys(noneLast, clean), noneLast, clean, exitVal)['F']||0) - fProceeds;
+      var cleanOrd = clean.map(function(r){ return {id:r.id,name:r.name,inv:r.inv,secType:'ord'}; });
+      var prefDol = (waterfall(holderKeys(last, clean), last, cleanOrd, exitVal)['F']||0) - fProceeds;
+      var adActive = adMode!=='none' && firedDown, cr='';
+      if(adActive){ var c1=adDol>0.05;
+        cr+='<div class="costrow"><div class="cn">Anti-dilution · '+(adMode==='ratchet'?'full ratchet':'weighted average')+'<small>founders’ stake &amp; exit, vs no clause</small></div><div class="cv '+(c1?'bad':'zero')+'">'+(c1?('−'+adPts.toFixed(1)+' pts · −'+fmtM(adDol)):'≈ no cost')+'</div></div>';
+      } else {
+        cr+='<div class="costrow"><div class="cn">Anti-dilution<small>'+(firedDown?'set to None':'no down round to trigger it')+'</small></div><div class="cv zero">no cost</div></div>';
+      }
+      var c2=prefDol>0.05;
+      cr+='<div class="costrow"><div class="cn">Liquidation preferences<small>founders’ exit, vs every investor holding ordinary shares</small></div><div class="cv '+(c2?'bad':'zero')+'">'+(c2?('−'+fmtM(prefDol)):'≈ no cost at this exit')+'</div></div>';
+      $('costRows').innerHTML=cr;
+    } else {
+      $('costRows').innerHTML='<div class="costrow"><div class="cn">—<small>fix the flagged input to see the cost</small></div><div class="cv zero">—</div></div>';
+    }
+
+    // cap table
+    var priceNow = lastPriced?lastPriced.price:0;
+    var head='<tr><th>Holder</th>'+stages.map(function(st){return '<th>'+esc(st.label==='Founding'?'Start':st.label)+'</th>';}).join('')+'<th>Shares (m)</th><th>Value</th></tr>';
+    $('thead').innerHTML=head;
+    var body=holders.map(function(h){
+      var cells=stages.map(function(st){ var v=st.hold[h.key]; return '<td>'+(v>0?fmtPct(v):DASH)+'</td>'; }).join('');
+      var finalSh = h.key==='F'?last.common : (h.key.charAt(0)==='p'?(function(){var pl=last.pools.find(function(x){return 'p'+x.id===h.key;});return pl?pl.shares:0;})():(function(){var p=last.prefs.find(function(x){return 'r'+x.id===h.key;});return p?p.shares:0;})());
+      var cls = h.key==='F'?' class="founders"':'';
+      return '<tr'+cls+'><td><span class="sw" style="background:'+h.color+'"></span>'+esc(h.label)+'</td>'+cells+'<td>'+fmtSh(finalSh)+'</td><td>'+fmtM(finalSh*priceNow)+'</td></tr>';
+    }).join('');
+    body+='<tr class="total"><td>Total (fully diluted)</td>'+stages.map(function(){return '<td>100%</td>';}).join('')+'<td>'+fmtSh(last.total)+'</td><td>'+fmtM(last.total*priceNow)+'</td></tr>';
+    $('tbody').innerHTML=body;
+
+    // at exit — waterfall proceeds, multiple, IRR
+    function typeLabel(h){
+      if(h.key==='F') return 'common (founders)';
+      if(h.key.charAt(0)==='p') return 'option pool · assumed exercised';
+      var rd=clean.find(function(x){return 'r'+x.id===h.key;}); var st=rd?(rd.secType||'nonpart'):'nonpart';
+      if(st==='ord') return 'ordinary';
+      if(st==='part') return 'participating pref.';
+      return (dist.__conv&&dist.__conv[h.key])?'non-part. pref. · converted':'non-part. preferred';
+    }
+    var rowsE=holders.map(function(h){
+      var own=last.hold[h.key]||0, proceeds=dist[h.key]||0;
+      var rd=(h.key.charAt(0)==='r')?clean.find(function(x){return 'r'+x.id===h.key;}):null;
+      var invested=rd?rd.inv:null;
+      var mult=(invested&&invested>0)?(proceeds/invested):null;
+      var yrs=rd?yrsBetween(rd.date,exitDate):null;
+      var irrCell;
+      if(!(invested&&invested>0)) irrCell=DASH;
+      else if(yrs==null) irrCell='<span class="needdate">add dates</span>';
+      else if(yrs<=0) irrCell='<span class="needdate">exit ≤ round</span>';
+      else irrCell=fmtIRR(irrOf(invested,proceeds,yrs));
+      var cls=h.key==='F'?' class="founders"':'';
+      return '<tr'+cls+'><td><span class="sw" style="background:'+h.color+'"></span>'+esc(h.label)+'<div class="htype">'+typeLabel(h)+'</div></td>'+
+        '<td>'+fmtPct(own)+'</td>'+
+        '<td>'+(invested!=null?fmtM(invested):DASH)+'</td>'+
+        '<td>'+fmtM(proceeds)+'</td>'+
+        '<td>'+(mult!=null?fmtMult(mult):DASH)+'</td>'+
+        '<td>'+irrCell+'</td></tr>';
+    }).join('');
+    $('exitBody').innerHTML = modelOk ? rowsE : '<tr><td colspan="6" style="text-align:left;color:var(--muted);padding:14px 2px">Fix the flagged input above to see the exit outcome.</td></tr>';
+  }
+
+  // ---- controls ----
+  $('adSeg').querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click',function(){
+      adMode=b.dataset.ad;
+      $('adSeg').querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); });
+      render();
+    });
+  });
+  $('poolSeg').querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click',function(){
+      poolMode=b.dataset.pool;
+      $('poolSeg').querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); });
+      render();
+    });
+  });
+  $('founders').addEventListener('input',render);
+  $('exit').addEventListener('input',render);
+  $('exit').addEventListener('change',render);
+  $('exitDate').addEventListener('input',render);
+  $('exitDate').addEventListener('change',render);
+  $('addRound').addEventListener('click',function(){
+    var names=['Seed','Series A','Series B','Series C','Series D','Series E'];
+    var lastR=rounds[rounds.length-1];
+    var nd = lastR&&lastR.date? addMonths(lastR.date,18) : '2021-01-01';
+    rounds.push({id:++uid,name:names[Math.min(rounds.length,names.length-1)]||('Round '+(rounds.length+1)),date:nd,pre:20,inv:6,pool:0,secType:'nonpart'});
+    renderRoundsUI(); render();
+  });
+  function setPressed(segId,val,attr){ $(segId).querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x.dataset[attr]===val?'true':'false'); }); }
+  function loadDefault(){ rounds=defaultRounds(); $('founders').value=8; adMode='wa'; poolMode='pre';
+    $('exit').value=200; $('exitDate').value='2028-01-01';
+    setPressed('adSeg','wa','ad'); setPressed('poolSeg','pre','pool');
+    renderRoundsUI(); render(); }
+  $('loadExample').addEventListener('click', loadDefault);
+  $('reset').addEventListener('click',function(){
+    uid=0; rounds=[]; $('founders').value=10; adMode='none'; poolMode='pre';
+    $('exit').value=200; $('exitDate').value='2028-01-01';
+    setPressed('adSeg','none','ad'); setPressed('poolSeg','pre','pool');
+    renderRoundsUI(); render();
+  });
+
+  // ---- back-solve view (exit + required IRR → pre-money, per the valuation slides) ----
+  function renderSolve(){
+    var inv=parseFloat($('sInv').value)||0, exist=parseFloat($('sExist').value)||0;
+    var exit=parseFloat($('sExit').value)||0, yrs=parseFloat($('sYears').value)||0, irr=(parseFloat($('sIrr').value)||0)/100;
+    var proceeds=inv*Math.pow(1+irr,yrs);
+    var own=exit>0?proceeds/exit:2;
+    var sErr=$('sErr');
+    if(!(inv>0)||!(exit>0)||!(exist>0)){ sErr.className='err show'; sErr.textContent='Give a positive investment, exit value and existing share count.'; }
+    else if(own>=1){ sErr.className='err show'; sErr.textContent='The required proceeds ('+fmtM(proceeds)+') are more than the whole exit ('+fmtM(exit)+') — no stake below 100% earns this return. Lower the IRR, shorten the horizon, or raise the exit.'; }
+    else { sErr.className='err'; }
+    var ok = inv>0 && exit>0 && exist>0 && own>0 && own<1;
+    var post=ok?inv/own:0, pre=ok?post-inv:0, newSh=ok?exist*(own/(1-own)):0, pps=ok?pre/exist:0;
+    $('sPre').textContent=ok?fmtM(pre):'—';
+    $('sPost').textContent=ok?fmtM(post):'—';
+    $('sOwn').textContent=ok?fmtPct(own):'—';
+    $('sOwnNote').textContent=ok?('needed to earn '+(irr*100).toFixed(0)+'% over '+yrs+'y'):'';
+    var ppsStr = ok?('$'+(pps<1?pps.toFixed(4):pps.toFixed(2))):'—';
+    var rows=[
+      ['Required proceeds','investment × (1 + IRR)<sup>years</sup>', ok?fmtM(proceeds):'—'],
+      ['Required ownership','proceeds ÷ exit value', ok?fmtPct(own):'—'],
+      ['Post-money','investment ÷ ownership', ok?fmtM(post):'—'],
+      ['Pre-money','post-money − investment', ok?fmtM(pre):'—'],
+      ['New shares to issue','existing × own ÷ (1 − own)', ok?(fmtSh(newSh)+' m'):'—'],
+      ['Price per share','pre-money ÷ existing shares', ppsStr]
+    ];
+    $('sBody').innerHTML=rows.map(function(r){ return '<tr><td style="font-weight:600">'+r[0]+'</td><td style="text-align:left;color:var(--muted);font-size:12px">'+r[1]+'</td><td style="font-weight:700">'+r[2]+'</td></tr>'; }).join('');
+  }
+  $('viewSeg').querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click',function(){ view=b.dataset.view;
+      $('viewSeg').querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); });
+      show('buildCtl',view==='build'); show('solveCtl',view==='solve');
+      show('buildOut',view==='build'); show('solveOut',view==='solve');
+      if(view==='solve') renderSolve();
+    });
+  });
+  ['sInv','sExist','sExit','sYears','sIrr'].forEach(function(id){ $(id).addEventListener('input',renderSolve); });
+  renderSolve();
+
+  loadDefault();
+})();
+</script>
+
+<script>
+/* Reset confirmation — inlined from the Concept Labs shared enhancer, restyled.
+   Intercepts the reset button in the capture phase and asks first; on confirm the
+   tool's own reset handler runs untouched. Also the narrow-screen laptop hint. */
+(function () {
+  var btn = document.getElementById('reset');
+  if (btn) {
+    btn.addEventListener('click', function (e) {
+      if (btn.dataset.clOk) { btn.dataset.clOk = ''; return; }
+      e.preventDefault(); e.stopImmediatePropagation();
+      openConfirm(function () { btn.dataset.clOk = '1'; btn.click(); });
+    }, true);
+  }
+  function openConfirm(onYes) {
+    var prev = document.activeElement;
+    var back = document.createElement('div'); back.className = 'cl-backdrop';
+    var card = document.createElement('div'); card.className = 'cl-modal';
+    card.setAttribute('role', 'dialog'); card.setAttribute('aria-modal', 'true');
+    card.setAttribute('aria-labelledby', 'clModalTitle');
+    card.innerHTML =
+      '<h2 id="clModalTitle" class="cl-modal-t">Clear the whole cap table?</h2>' +
+      '<p class="cl-modal-b">This removes every round you’ve added and resets the founders to 100%. It can’t be undone.</p>' +
+      '<div class="cl-modal-btns"><button type="button" class="cl-btn-cancel">Keep my work</button>' +
+      '<button type="button" class="cl-btn-yes">Clear it</button></div>';
+    back.appendChild(card); document.body.appendChild(back);
+    document.body.style.overflow = 'hidden';
+    var btns = card.querySelectorAll('button');
+    function close() {
+      if (back.parentNode) back.parentNode.removeChild(back);
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', onKey, true);
+      if (prev && prev.focus) prev.focus();
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+      if (e.key === 'Tab') {
+        var first = btns[0], last = btns[btns.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+    document.addEventListener('keydown', onKey, true);
+    back.addEventListener('mousedown', function (e) { if (e.target === back) close(); });
+    card.querySelector('.cl-btn-cancel').addEventListener('click', close);
+    card.querySelector('.cl-btn-yes').addEventListener('click', function () { close(); onYes(); });
+    card.querySelector('.cl-btn-cancel').focus();
+  }
+  if (window.matchMedia && window.matchMedia('(max-width: 720px)').matches) {
+    var anchor = document.querySelector('.lab');
+    if (anchor && !document.querySelector('.cl-laphint')) {
+      var h = document.createElement('div'); h.className = 'cl-laphint';
+      h.innerHTML = '<span>Best explored on a laptop — this tool’s tables are wide.</span>';
+      anchor.parentNode.insertBefore(h, anchor);
+    }
+  }
+})();
+</script>
+
+<!-- Vercel Web Analytics -->
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

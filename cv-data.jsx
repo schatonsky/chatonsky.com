@@ -300,6 +300,14 @@ const CV = {
       url: "https://eruleo.com",
       cta: "Visit",
     },
+    {
+      code: "03",
+      tag: "Free to use",
+      title: "Cap Table, Dilution & Returns",
+      desc: "Build a company round by round and watch who owns what as the money comes in. Price a round below the last and anti-dilution kicks in. Then run an exit through the liquidation waterfall to see every investor's proceeds, multiple and IRR — and what the terms cost the founders.",
+      url: "/captable",
+      cta: "Open",
+    },
   ],
 
   writings: [

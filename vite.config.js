@@ -9,6 +9,7 @@ export default defineConfig({
         index: 'index.html',
         assessment: 'assessment.html',
         writing: 'writing.html',
+        captable: 'captable.html',
       },
     },
   },
