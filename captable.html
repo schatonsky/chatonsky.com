@@ -280,7 +280,7 @@
             <button type="button" data-pool="pre" aria-pressed="true">Pre-money</button>
             <button type="button" data-pool="post">Post-money</button>
           </div>
-          <p class="sub" style="font-size:12.5px;margin:10px 0 0">Pre-money: the existing holders pay for the pool. Post-money: everyone, the new investor included, shares it. In a down round, a new pool is always created post-money.</p>
+          <p class="sub" style="font-size:12.5px;margin:10px 0 0">Pre-money: the existing holders pay for the pool. Post-money: everyone, the new investor included, shares it. The same choice applies in a down round, where the pool is priced alongside any anti-dilution adjustment.</p>
         </div>
 
         <div class="block">
@@ -394,7 +394,7 @@
     <h3>The maths</h3>
     <p>Each round is priced off the shares already outstanding: <span class="fx">price = pre-money &divide; shares before the round</span>, and the new investor&rsquo;s stake is <span class="fx">investment &divide; post-money</span>. Add rounds and the bars redraw the ownership split after every raise.</p>
     <p>A new <b>option pool</b> can be created two ways. <b>Pre-money</b>, it comes out of the existing holders before the money lands &mdash; the classic &ldquo;option pool shuffle&rdquo; that quietly costs founders. <b>Post-money</b>, everyone (the new investor included) is diluted by it. The toggle switches between the two, and each round&rsquo;s pool is shown as its own hatched slice.</p>
-    <p>A <b>down round</b> is any round priced below an earlier one &mdash; its bar and its round card turn red. That&rsquo;s when an <b>anti-dilution</b> clause fires, for every investor whose price was higher. <b>Full ratchet</b> resets their price all the way to the new low &mdash; the old round and the new price are solved <em>together</em>, so it can gut the founders. <b>Broad-based weighted average</b> only nudges their price, scaled by how small the down round is versus the whole company: <span class="fx">new price = old &times; (A + B) &divide; (A + C)</span> &mdash; far gentler. <b>None</b> lets earlier investors dilute like anyone else. Only <b>preferred</b> shares carry anti-dilution &mdash; a round you set as <b>ordinary</b> just dilutes like everyone else.</p>
+    <p>A <b>down round</b> is any round priced below an earlier one &mdash; its bar and its round card turn red. That&rsquo;s when an <b>anti-dilution</b> clause fires, for every investor whose price was higher. <b>Full ratchet</b> resets their price all the way to the new low &mdash; the old round and the new price are solved <em>together</em>, so it can gut the founders. <b>Broad-based weighted average</b> only nudges their price, scaled by how small the down round is versus the whole company: <span class="fx">new price = old &times; (A + B) &divide; (A + C)</span> &mdash; far gentler. <b>None</b> lets earlier investors dilute like anyone else. Only <b>preferred</b> shares carry anti-dilution &mdash; a round you set as <b>ordinary</b> just dilutes like everyone else. The trigger is tested against the price the round <em>actually issues at</em>, which includes the effect of a pre-money option pool and of the adjustment itself &mdash; so the price and the protected set are solved together, not one after the other.</p>
     <p>At <b>exit</b>, proceeds run a 1&times; liquidation waterfall (preferences rank <em>pari passu</em>): <b>non-participating</b> preferred take the greater of their money back or converting to common; <b>participating</b> preferred take their money back <em>and</em> share the rest; <b>ordinary</b> shares just split pro-rata. The <b>option pool</b> here is treated as if fully granted and exercised at a nil strike, so it takes proceeds like common &mdash; a simplification (an unallocated reserve wouldn&rsquo;t). Each cheque&rsquo;s <b>IRR</b> is then annualised from its round&rsquo;s date to the exit date: <span class="fx">(proceeds &divide; invested) ^ (1 &divide; years) &minus; 1</span>.</p>
 
     <h3>Definitions</h3>
@@ -495,48 +495,63 @@
       var r=rlist[k];
       var FDpre=total(); var P=+r.pre, I=+r.inv, q=(+r.pool||0)/100;
       if(!(P>0)||!(I>=0)||!(FDpre>0)){ invalid={round:r.name,msg:'Give this round a positive pre-money and investment.'}; snap(r.name,{invalid:true}); continue; }
-      var M=P+I, invPct=I/M, naive=P/FDpre;
-      var willAdj = mode!=='none' && prefs.some(function(p){return p.secType!=='ord' && p.cp>naive+1e-12;});
-      var price, invShares, poolAdd=0, ad='';
-      if(willAdj){
-        if(mode==='ratchet'){
-          var p=naive, ok=true;
-          for(var it=0;it<20;it++){
-            var sumD=0, nonAdj=common+poolSum();
-            prefs.forEach(function(pf){ if(pf.secType!=='ord' && pf.cp>p+1e-12){sumD+=pf.D;} else {nonAdj+=pf.shares;} });
-            var pn=(P-sumD)/nonAdj;
-            if(!(pn>0)){ ok=false; break; }
-            if(Math.abs(pn-p)<1e-10){ p=pn; break; }
-            p=pn;
-          }
-          if(!ok){ invalid={round:r.name,msg:'This down round is deeper than the capital the ratchet must convert — the price goes negative. Raise the pre-money.'}; snap(r.name,{invalid:true}); continue; }
-          prefs.forEach(function(pf){ if(pf.secType!=='ord' && pf.cp>p+1e-12){ pf.shares=pf.D/p; pf.cp=p; } });
-          price=p; invShares=I/p; ad='full ratchet';
-        } else {
-          // weighted-average, FIXED-OWNERSHIP: the new investor still lands on invest ÷ post-money;
-          // earlier preferred are repriced by the broad-based WA formula and founders/common absorb it.
-          // Closed form: pw = (P − I·K) / (nonAdj + A·K), with A = FDpre and K = Σ shares/(A + I/CP1) over protected prefs.
-          var A=FDpre, K=0, nonAdj=common+poolSum();
-          prefs.forEach(function(pf){
-            if(pf.secType!=='ord' && pf.cp>naive+1e-12){ K+=pf.shares/(A + I/pf.cp); }
+      var M=P+I;
+      var A=FDpre;
+      // A PRE-money pool is carved out of the pre-money, so it lowers the price the round
+      // actually issues at. A POST-money pool is added afterwards and dilutes everyone, the
+      // new investor included, so it leaves the issue price alone. Either way the user's
+      // choice is honoured — including in a round where anti-dilution fires.
+      var Pterm = (poolMode==='post') ? P : P - q*M;
+      if(q>=1 || !(Pterm>0)){ invalid={round:r.name,msg:'Investor % + option pool % is 100% or more — lower the pool or the cheque.'}; snap(r.name,{invalid:true}); continue; }
+
+      // Solve the issue price and the protected set TOGETHER. Anti-dilution triggers on the
+      // price the round genuinely issues at, and that price is itself moved by the adjustment
+      // (and by a pre-money pool), so testing against an unadjusted price would both miss
+      // investors who really were priced down and disagree between the two AD modes.
+      // Enlarging the protected set only lowers the price, and lowering the price only
+      // enlarges the set, so the iteration is monotone and settles in at most one pass
+      // per series. Starting point: the price with nobody protected, which is the highest.
+      var price=Pterm/A, chosen={}, priceFail=null, sig=null;
+      if(mode!=='none'){
+        for(var it=0;it<40;it++){
+          var sumD=0, nonAdj=common+poolSum(), K=0, ids=[], sel={};
+          for(var z=0;z<prefs.length;z++){
+            var pf=prefs[z];
+            if(pf.secType!=='ord' && pf.cp>price+1e-12){ sel[pf.id]=1; ids.push(pf.id); sumD+=pf.D; K+=pf.shares/(A + I/pf.cp); }
             else { nonAdj+=pf.shares; }
-          });
-          var pw=(P - I*K)/(nonAdj + A*K);
-          if(!(pw>0)){ invalid={round:r.name,msg:'This weighted-average down round can’t be priced at a positive share price — raise the pre-money.'}; snap(r.name,{invalid:true}); continue; }
-          prefs.forEach(function(pf){ if(pf.secType!=='ord' && pf.cp>naive+1e-12){ var cp2=pf.cp*(A+I/pf.cp)/(A+I/pw); pf.shares=pf.D/cp2; pf.cp=cp2; } });
-          price=pw; invShares=I/pw; ad='weighted-average';
+          }
+          // ratchet: protected hold D/p. weighted average: protected are repriced by the
+          // broad-based formula, the new investor still lands on invest ÷ post-money, and
+          // founders/common absorb the difference.
+          // Closed form: p = (Pterm − I·K) / (nonAdj + A·K), K = Σ shares/(A + I/CP1).
+          var pn = (mode==='ratchet') ? (Pterm-sumD)/nonAdj : (Pterm-I*K)/(nonAdj+A*K);
+          if(!(pn>0)){ priceFail = ids.length ? mode : 'pool'; break; }
+          chosen=sel;
+          var s2=ids.join(',');
+          if(s2===sig){ price=pn; break; }
+          sig=s2; price=pn;
         }
-      } else if(q>0 && poolMode==='post'){
-        var FD0=FDpre/(1-invPct); price=M/FD0; invShares=invPct*FD0; poolAdd=q*FD0/(1-q);
-      } else {
-        var denom=1-invPct-q;
-        if(denom<=0){ invalid={round:r.name,msg:'Investor % + option pool % is 100% or more — lower the pool or the cheque.'}; snap(r.name,{invalid:true}); continue; }
-        var FDpost=FDpre/denom; price=M/FDpost; poolAdd=q*FDpost; invShares=invPct*FDpost;
       }
+      if(priceFail){
+        invalid={round:r.name,msg:
+          priceFail==='ratchet' ? 'This down round is deeper than the capital the ratchet must convert — the price goes negative. Raise the pre-money.' :
+          priceFail==='wa' ? 'This weighted-average down round can’t be priced at a positive share price — raise the pre-money.' :
+          'Investor % + option pool % is 100% or more — lower the pool or the cheque.'};
+        snap(r.name,{invalid:true}); continue;
+      }
+      var ad='', adjusted=[];
+      for(var z2=0;z2<prefs.length;z2++){ if(chosen[prefs[z2].id]) adjusted.push(prefs[z2]); }
+      if(adjusted.length){
+        ad = (mode==='ratchet') ? 'full ratchet' : 'weighted-average';
+        adjusted.forEach(function(pf){
+          if(mode==='ratchet'){ pf.shares=pf.D/price; pf.cp=price; }
+          else { var cp2=pf.cp*(A + I/pf.cp)/(A + I/price); pf.shares=pf.D/cp2; pf.cp=cp2; }
+        });
+      }
+      var invShares=I/price;
+      var poolAdd = q>0 ? ((poolMode==='post') ? q*(M/price)/(1-q) : q*(M/price)) : 0;
       var prev=null; for(var s=stages.length-1;s>=0;s--){ if(stages[s].price!=null){prev=stages[s].price;break;} }
       var dir = prev==null?'first':(price>prev*(1+1e-9)?'up':(price<prev*(1-1e-9)?'down':'flat'));
-      // a new pool must still form in an anti-dilution round — created post-money (dilutes everyone, incl. the new investor)
-      if(willAdj && q>0){ var Tb=common+poolSum()+prefs.reduce(function(a,p){return a+p.shares;},0)+invShares; poolAdd=q*Tb/(1-q); }
       if(poolAdd>0) pools.push({id:r.id,name:r.name,shares:poolAdd});
       prefs.push({id:r.id,name:r.name,D:I,cp:price,shares:invShares,secType:r.secType||'nonpart'});
       snap(r.name,{price:price,dir:dir,ad:ad,poolHere:poolAdd});
