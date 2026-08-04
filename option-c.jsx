@@ -83,6 +83,7 @@ const OptionC = () => {
         .opt-c .edu .item .l { font-size: 13px; color: var(--soft); margin-top: 4px; font-family: var(--serif); }
         .opt-c .appcard { border: 1px solid var(--rule); border-left: 3px solid var(--accent); background: #fff; padding: 28px 32px; margin-bottom: 40px; display: grid; grid-template-columns: 1fr max-content; gap: 24px; align-items: center; }
         .opt-c .appcard .ac-lab { font-family: var(--mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 10px; }
+        .opt-c .appcard .ac-lab .ac-beta { display: inline-block; font-size: 9.5px; letter-spacing: 0.16em; color: var(--accent); border: 1px solid var(--accent); padding: 2px 8px; margin-left: 12px; vertical-align: 1px; }
         .opt-c .appcard h3 { font-size: 21px; font-weight: 500; letter-spacing: -0.01em; margin: 0 0 8px; }
         .opt-c .appcard p { font-size: 14.5px; line-height: 1.6; color: var(--soft); margin: 0; max-width: 52ch; }
         .opt-c .appcard .ac-btn { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; padding: 13px 24px; background: var(--accent); color: #f5f5f0; white-space: nowrap; transition: background 0.15s ease; }
@@ -255,7 +256,7 @@ const OptionC = () => {
           {(C.apps || []).slice(0, 1).map((a, i) =>
           <div className="appcard" key={i}>
             <div>
-              <div className="ac-lab">Thing / {a.code}{a.tag ? ' · ' + a.tag : ''}</div>
+              <div className="ac-lab">Thing / {a.code}{a.tag ? ' · ' + a.tag : ''}{a.beta && <span className="ac-beta">Beta</span>}</div>
               <h3>{a.title}</h3>
               <p>{a.desc}</p>
             </div>

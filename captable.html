@@ -70,6 +70,12 @@
   .hero h1 .acc{ color:var(--accent); }
   .hero .lede{ font-size:18px; line-height:1.55; color:var(--soft); margin:0; max-width:72ch; }
   .hero .lede b{ color:var(--ink); font-weight:500; }
+  .beta{ display:inline-block; font-family:var(--mono); font-size:9.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--accent); border:1px solid var(--accent); padding:2px 8px; margin-left:12px; vertical-align:1px; }
+  .betanote{ font-family:var(--serif); font-size:13.5px; line-height:1.55; color:var(--mute); margin:20px 0 0; max-width:76ch;
+    padding-left:14px; border-left:2px solid var(--rule); }
+  .betanote a{ color:var(--accent); border-bottom:1px solid var(--accent); padding-bottom:1px; }
+  .betanote .k{ font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); }
 
   .lab{ display:grid; grid-template-columns:344px 1fr; gap:32px; align-items:start; }
   @media (max-width:860px){ .lab{ grid-template-columns:1fr; } }
@@ -238,9 +244,10 @@
 
 <div class="wrap">
   <div class="hero">
-    <p class="lab-el">Thing / 03 &middot; Free to use</p>
+    <p class="lab-el">Thing / 03 &middot; Free to use <span class="beta">Beta</span></p>
     <h1>Cap table, dilution <span class="acc">and returns.</span></h1>
     <p class="lede">Build a company round by round and watch who owns what as the money comes in. Price a round below the last and it turns <b>red</b> &mdash; a down round, where anti-dilution kicks in. Set each round&rsquo;s dates and share type, then run an exit to see every investor&rsquo;s proceeds, multiple and IRR.</p>
+    <p class="betanote"><span class="k">Beta</span> &mdash; this tool is still being refined. The model simplifies in places: liquidation preferences are 1&times; and rank <em>pari passu</em>, and the option pool is treated as fully granted and exercised at a nil strike. Read <a href="#" id="betaGuideLink">How it works</a> before relying on a number, and if something looks wrong, <a href="mailto:stephane@chatonsky.com?subject=Cap%20table%20tool%20%E2%80%94%20feedback">tell me</a>.</p>
   </div>
 
   <div class="lab">
@@ -835,6 +842,8 @@
    Intercepts the reset button in the capture phase and asks first; on confirm the
    tool's own reset handler runs untouched. Also the narrow-screen laptop hint. */
 (function () {
+  var bl = document.getElementById('betaGuideLink');
+  if (bl) bl.addEventListener('click', function (e) { e.preventDefault(); document.getElementById('guideBtn').click(); });
   var btn = document.getElementById('reset');
   if (btn) {
     btn.addEventListener('click', function (e) {
