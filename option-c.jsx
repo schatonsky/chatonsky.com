@@ -180,7 +180,7 @@ const OptionC = () => {
         <div className="sec-head"><div className="lab">Approach</div><h2>A board contribution rooted in execution.</h2></div>
         <div className="body">
           {C.summaryProse.map((p, i) => <p key={i} className={i === 0 ? 'lead' : ''}>{p}</p>)}
-          <p>Track record: <span style={{ color: 'var(--ink)' }}>4Cyte Pathology</span> from concept to {'>'}$600m revenue; <span style={{ color: 'var(--ink)' }}>Prospection</span> through $65m across two rounds and into the US and Japan; <span style={{ color: 'var(--ink)' }}>Genetic Signatures</span> through CEO transition and two raises; advising <span style={{ color: 'var(--ink)' }}>Heidi</span>, used by 370,000 clinicians in 10 million consultations per month.</p>
+          <p>Track record: <span style={{ color: 'var(--ink)' }}>4Cyte Pathology</span> from concept to {'>'}$600m revenue; <span style={{ color: 'var(--ink)' }}>Prospection</span> through $65m across two rounds and into the US and Japan; <span style={{ color: 'var(--ink)' }}>Genetic Signatures</span> through CEO transition and two raises; advising <span style={{ color: 'var(--ink)' }}>Heidi</span>, used by 500,000 clinicians in 12 million consultations per month.</p>
         </div>
       </section>
 
