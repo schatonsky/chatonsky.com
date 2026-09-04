@@ -62,14 +62,6 @@ const CV = {
       note: "Listed precision microbiome company advancing health through gut microbiome technology.",
     },
     {
-      role: "Non-Executive Director",
-      org: "Cerulea Clinical Trials",
-      where: "Melbourne",
-      from: "Feb 2024",
-      to: "Present",
-      note: "Ophthalmology CRO spin-out from CERA, backed by Breakthrough Victoria. Steering CEO transition and commercial growth.",
-    },
-    {
       role: "Senior Adviser",
       org: "Vexev",
       where: "Sydney",
@@ -96,6 +88,14 @@ const CV = {
   ],
 
   prior: [
+    {
+      role: "Non-Executive Director",
+      org: "Cerulea Clinical Trials",
+      where: "Melbourne",
+      from: "2024",
+      to: "2026",
+      note: "Ophthalmology CRO spin-out from CERA, backed by Breakthrough Victoria. Steered CEO transition and commercial growth.",
+    },
     {
       role: "Non-Executive Director",
       org: "Neo-Bionica",
