@@ -53,6 +53,14 @@ const CV = {
 
   current: [
     {
+      role: "Non-Executive Director",
+      org: "DR2",
+      where: "Sydney",
+      from: "Sep 2026",
+      to: "Present",
+      note: "Healthcare technology company behind 13SICK, Australia’s largest after-hours home doctor network, providing bulk billed home visits and telehealth nationally. Backed by Black Kite Partners and MA Financial.",
+    },
+    {
       role: "Non-Executive Director, Audit & Risk Committee",
       org: "Microba Life Sciences",
       ticker: "ASX: MAP",
