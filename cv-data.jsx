@@ -97,7 +97,7 @@ const CV = {
       role: "Expert-in-Residence",
       org: "Cicada Innovations",
       where: "Sydney & Melbourne",
-      from: "2023",
+      from: "Dec 2023",
       to: "Present",
       note: "Advising advanced therapeutics and medical devices ventures on commercialisation and investment readiness.",
     },
