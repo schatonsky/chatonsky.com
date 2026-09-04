@@ -61,6 +61,14 @@ const CV = {
       note: "Healthcare technology company behind 13SICK, Australia’s largest after-hours home doctor network, providing bulk billed home visits and telehealth nationally. Backed by Black Kite Partners and MA Financial.",
     },
     {
+      role: "Non-Executive Director",
+      org: "Xylo",
+      where: "Sydney & USA",
+      from: "Aug 2026",
+      to: "Present",
+      note: "Next-generation therapeutics company using advanced neuroscience and computational drug discovery to rewire neural circuits and restore brain function. Nominee of Main Sequence Ventures.",
+    },
+    {
       role: "Non-Executive Director, Audit & Risk Committee",
       org: "Microba Life Sciences",
       ticker: "ASX: MAP",
