@@ -258,6 +258,12 @@ const CV = {
       note: "Venture capital, private equity and corporate valuation. Evidence in complex commercial disputes including Australia's largest civil personal claim and a landmark AFR defamation matter.",
     },
     {
+      title: "Adjunct Faculty, UNSW & AGSM",
+      from: "2005",
+      to: "Present",
+      note: "MBA and Bachelor of Commerce programs.",
+    },
+    {
       title: "Honorary Fellow, Macquarie University",
       from: "2000",
       to: "2023",
@@ -268,12 +274,6 @@ const CV = {
       from: "2024",
       to: "2025",
       note: "Master of Finance & Investment Management.",
-    },
-    {
-      title: "Adjunct Faculty, UNSW & AGSM",
-      from: "2005",
-      to: "Present",
-      note: "MBA and Bachelor of Commerce programs.",
     },
   ],
 
