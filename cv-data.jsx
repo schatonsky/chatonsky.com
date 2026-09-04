@@ -62,7 +62,7 @@ const CV = {
     },
     {
       role: "Non-Executive Director",
-      org: "Psylo",
+      org: "Psylo (Xylo)",
       where: "Sydney & USA",
       from: "Aug 2026",
       to: "Present",
