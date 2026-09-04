@@ -54,7 +54,7 @@ const CV = {
   current: [
     {
       role: "Non-Executive Director",
-      org: "DR2",
+      org: "DR2 (13SICK)",
       where: "Sydney",
       from: "Sep 2026",
       to: "Present",
@@ -62,7 +62,7 @@ const CV = {
     },
     {
       role: "Non-Executive Director",
-      org: "Xylo",
+      org: "Psylo",
       where: "Sydney & USA",
       from: "Aug 2026",
       to: "Present",
