@@ -270,10 +270,10 @@ const CV = {
       note: "Master of Finance & Investment Management.",
     },
     {
-      title: "Adjunct Faculty, AGSM (UNSW)",
+      title: "Adjunct Faculty, UNSW & AGSM",
       from: "2005",
-      to: "2022",
-      note: "MBA program.",
+      to: "Present",
+      note: "MBA and Bachelor of Commerce programs.",
     },
   ],
 
