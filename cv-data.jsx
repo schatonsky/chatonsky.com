@@ -118,7 +118,7 @@ const CV = {
       where: "Melbourne",
       from: "2024",
       to: "2026",
-      note: "Ophthalmology CRO spin-out from CERA. Steered CEO transition and commercial growth. Nominee of Breakthrough Victoria.",
+      note: "Nominee of Breakthrough Victoria. Steered CEO transition and commercial growth.",
     },
     {
       role: "Non-Executive Director",
