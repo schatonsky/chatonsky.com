@@ -260,7 +260,7 @@ const CV = {
     {
       title: "Honorary Fellow, Macquarie University",
       from: "2000",
-      to: "Present",
+      to: "2023",
       note: "Faculty of Applied Finance — authored and taught postgraduate courses in Private Equity and Venture Capital.",
     },
     {
