@@ -94,6 +94,14 @@ const CV = {
       note: "AI healthtech automating clinical admin for 370,000 clinicians and 10m consultations / month. Global BD, product and capital strategy.",
     },
     {
+      role: "Expert-in-Residence",
+      org: "Cicada Innovations",
+      where: "Sydney & Melbourne",
+      from: "2023",
+      to: "Present",
+      note: "Advising advanced therapeutics and medical devices ventures on commercialisation and investment readiness.",
+    },
+    {
       role: "Syndicate Chair",
       org: "The CEO Institute",
       where: "Sydney",
@@ -136,14 +144,6 @@ const CV = {
       from: "2023",
       to: "2024",
       note: "Navigated CEO transition, supported two capital raises and a key regulatory milestone (FDA-approved PCR).",
-    },
-    {
-      role: "Expert-in-Residence",
-      org: "Cicada Innovations",
-      where: "Sydney",
-      from: "2023",
-      to: "2024",
-      note: "Advised advanced therapeutics venture on commercialisation and investment readiness.",
     },
     {
       role: "Board Chair",
