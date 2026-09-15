@@ -59,7 +59,7 @@ const OptionC = () => {
         .opt-c .sectors { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1.5px solid var(--ink); }
         .opt-c .sector { padding: 24px 24px 28px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
         .opt-c .sector:nth-child(3n) { border-right: 0; }
-        .opt-c .sector:nth-last-child(-n+3) { border-bottom: 0; }
+        .opt-c .sector:last-child { border-right: 0; border-bottom: 0; }
         .opt-c .sector .code { font-family: var(--mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.18em; margin-bottom: 10px; }
         .opt-c .sector .name { font-size: 19px; font-weight: 500; margin-bottom: 6px; letter-spacing: -0.01em; }
         .opt-c .sector .note { font-family: var(--mono); font-size: 11.5px; color: var(--mute); line-height: 1.55; }

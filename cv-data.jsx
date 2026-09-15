@@ -43,11 +43,12 @@ const CV = {
 
   // Sectors — for the small matrix/index treatment
   sectors: [
-    { code: "LS", name: "Life sciences", note: "Microbiome, advanced therapeutics, molecular diagnostics" },
+    { code: "LS", name: "Life sciences", note: "Neuroscience, advanced therapeutics, microbiome" },
     { code: "MT", name: "Medtech", note: "Vascular imaging, neurotech, devices" },
     { code: "DX", name: "Diagnostics", note: "Pathology, PCR, FDA-pathway technologies" },
     { code: "DH", name: "Digital health", note: "Healthcare data analytics, platforms" },
-    { code: "AI", name: "AI & Data", note: "Clinical automation, decision support, analytics" },
+    { code: "AI", name: "AI & Data", note: "Clinical automation, decision support, computational drug discovery" },
+    { code: "CD", name: "Care delivery", note: "After-hours and home-based care, telehealth, primary care networks" },
     { code: "TS", name: "Tech & Software", note: "SaaS platforms, enterprise software, scale-ups" },
   ],
 
