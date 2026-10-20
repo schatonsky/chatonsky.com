@@ -92,7 +92,7 @@ const CV = {
       where: "Melbourne",
       from: "Jan 2024",
       to: "Present",
-      note: "AI healthtech automating clinical admin for 500,000 clinicians and 12m consultations / month. Global BD, product and capital strategy.",
+      note: "AI healthtech automating clinical admin for 500,000 clinicians and 15m consultations / month. Global BD, product and capital strategy.",
     },
     {
       role: "Expert-in-Residence",
@@ -346,7 +346,7 @@ const CV = {
     "4Cyte Pathology — concept to >$600m annual revenue",
     "Prospection — $65m across two rounds; US and Japan expansion",
     "Genetic Signatures — two capital raises through CEO transition",
-    "Heidi — 500,000 clinicians, 12m consultations / month",
+    "Heidi — 500,000 clinicians, 15m consultations / month",
   ],
 };
 
