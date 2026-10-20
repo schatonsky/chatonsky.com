@@ -1,7 +1,7 @@
 // Shared CV data — single source of truth across all three site explorations.
 const CV = {
   name: "Stephane D. Chatonsky",
-  postnoms: "MBA, GAICD",
+  postnoms: "MBA, FAICD",
   shortTagline: "Board Chair & Non-Executive Director",
   longTagline: "Healthcare, life sciences and AI — at board level.",
   pedigreeLine: "McKinsey · Lazard · Macquarie · LeapFrog · Wharton MBA",

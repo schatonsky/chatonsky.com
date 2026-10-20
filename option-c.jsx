@@ -162,7 +162,7 @@ const OptionC = () => {
           <div className="meta">
             <div><div className="lab">Pedigree</div><div className="v">McKinsey · Lazard · Macquarie</div></div>
             <div><div className="lab">Education</div><div className="v">Wharton MBA · ESSEC</div></div>
-            <div><div className="lab">Director</div><div className="v">GAICD · 2007</div></div>
+            <div><div className="lab">Director</div><div className="v">FAICD</div></div>
             <div><div className="lab">Based</div><div className="v">Sydney</div></div>
             <div><div className="lab">Operates</div><div className="v">Australia · Asia</div></div>
           </div>
