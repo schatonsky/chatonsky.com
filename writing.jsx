@@ -10,6 +10,11 @@ const Writing = () => {
   const writings = C.writings || [];
   const talks = C.talks || [];
   const posts = C.posts || [];
+  // Right-hand link names the outlet, since the label under the title is the theme.
+  const readLabel = (o) => !o ? 'Read'
+    : /submission/i.test(o) ? 'Read submission'
+    : /\/\s*web/i.test(o) ? 'Read on the web'
+    : 'Read on ' + o.replace(/^The /, '');
   // Section numbers follow whichever sections are present.
   let n = 1;
   const num = () => String(n++).padStart(2, '0');
@@ -119,8 +124,8 @@ const Writing = () => {
             {writings.map((x, i) =>
               <div key={i} className="entry">
                 <div className="yr">{x.date}</div>
-                <div className="q"><a href={x.url} target="_blank" rel="noopener">{x.title}</a>{x.outlet && <span className="tag">{x.outlet}</span>}</div>
-                <div className="go"><a href={x.url} target="_blank" rel="noopener">Read &rarr;</a></div>
+                <div className="q"><a href={x.url} target="_blank" rel="noopener">{x.title}</a>{(x.tag || x.outlet) && <span className="tag">{x.tag || x.outlet}</span>}</div>
+                <div className="go"><a href={x.url} target="_blank" rel="noopener">{readLabel(x.outlet)} &rarr;</a></div>
               </div>
             )}
           </div>
