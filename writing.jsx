@@ -11,10 +11,7 @@ const Writing = () => {
   const talks = C.talks || [];
   const posts = C.posts || [];
   // Right-hand link names the outlet, since the label under the title is the theme.
-  const readLabel = (o) => !o ? 'Read'
-    : /submission/i.test(o) ? 'Read submission'
-    : /\/\s*web/i.test(o) ? 'Read on the web'
-    : 'Read on ' + o.replace(/^The /, '');
+  const readLabel = (o) => !o ? 'Read' : /\/\s*web/i.test(o) ? 'Web' : o;
   // Section numbers follow whichever sections are present.
   let n = 1;
   const num = () => String(n++).padStart(2, '0');
@@ -144,7 +141,7 @@ const Writing = () => {
               <div key={i} className="entry">
                 <div className="yr">{x.date}</div>
                 <div className="q"><a href={x.url} target="_blank" rel="noopener">{x.hook}</a>{x.tag && <span className="tag">{x.tag}</span>}</div>
-                <div className="go"><a href={x.url} target="_blank" rel="noopener">Read on LinkedIn &rarr;</a></div>
+                <div className="go"><a href={x.url} target="_blank" rel="noopener">LinkedIn &rarr;</a></div>
               </div>
             )}
           </div>
