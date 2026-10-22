@@ -297,8 +297,8 @@ const CV = {
   // "Talks" on the /writing page automatically. Leave empty to hide the section.
   // Shape: { title, venue, date, url } (url optional).
   talks: [
-    { title: "Boards' AI reflex: why curiosity beats caution, in conversation with Kirsten Mann", venue: "Conversation", date: "2025", url: "https://www.linkedin.com/pulse/boards-ai-reflex-why-curiosity-beats-caution-kirsten-mann-8gj1c/" },
-    { title: "AI in Healthcare panel, with Michael Sistenich and Casey Flint", venue: "UBS Conference, Sydney", date: "2023", url: "https://www.linkedin.com/feed/update/urn:li:activity:7138370854505140224/" },
+    { title: "Boards' AI reflex: why curiosity beats caution, in conversation with Kirsten Mann", venue: "Conversation", date: "May 2025", url: "https://www.linkedin.com/pulse/boards-ai-reflex-why-curiosity-beats-caution-kirsten-mann-8gj1c/" },
+    { title: "AI in Healthcare panel, with Michael Sistenich and Casey Flint", venue: "UBS Conference, Sydney", date: "Dec 2023", url: "https://www.linkedin.com/feed/update/urn:li:activity:7138370854505140224/" },
   ],
 
   // LinkedIn posts (short-form) — curated, newest first. Shown in the "Posts"
@@ -348,16 +348,16 @@ const CV = {
   ],
 
   writings: [
-    { title: "Poor AI governance is driving hidden costs", outlet: "AICD", date: "2026", url: "https://www.aicd.com.au/innovative-technology/digital-business/artificial-intelligence/poor-ai-driving-hidden-costs.html" },
-    { title: "A tax break for startup employees that reaches almost none of them", outlet: "Treasury submission", date: "2026", url: "/assets/ibcc-submission-treasury-2026.pdf" },
-    { title: "Will AI be the risk we chose not to see?", outlet: "The Ethics Centre", date: "2026", url: "https://ethics.org.au/will-ai-be-the-risk-we-chose-not-to-see/" },
-    { title: "The $13 Trillion Question: What You Have to Believe About AI", outlet: "LinkedIn", date: "2026", url: "https://www.linkedin.com/pulse/13-trillion-question-what-you-have-believe-ai-stephane-chatonsky-qkpbc" },
-    { title: "Tokens keep getting cheaper. So why is your AI bill about to explode?", outlet: "LinkedIn", date: "2026", url: "https://www.linkedin.com/pulse/tokens-keep-getting-cheaper-so-why-your-ai-bill-stephane-chatonsky-yjvac" },
-    { title: "Sitting With the Second Existential Risk: the case for an IPCC for AI", outlet: "LinkedIn / Web", date: "2026", url: "https://ipccforai.org/" },
-    { title: "The Importance of Spending Time: Reflections from 19 Years with my son", outlet: "LinkedIn", date: "2025", url: "https://www.linkedin.com/pulse/importance-spending-time-reflections-from-19-years-my-chatonsky-hhepc/" },
-    { title: "Living in AI's Age of Dissociative Identity: Embracing and Fearing the Future at Once", outlet: "LinkedIn", date: "2025", url: "https://www.linkedin.com/pulse/living-ais-age-dissociative-identity-embracing-future-chatonsky-rxcae/" },
-    { title: "Harnessing Data and Technology for Faster and Smarter Patient Recruitment", outlet: "LinkedIn", date: "2024", url: "https://www.linkedin.com/pulse/harnessing-data-technology-faster-smarter-patient-stephane-chatonsky-q2ohc/" },
-    { title: "In healthcare, the data and technology exist. Why not use it?", outlet: "LinkedIn", date: "2024", url: "https://www.linkedin.com/pulse/healthcare-data-technology-exist-why-use-stephane-chatonsky-rmv0e/" },
+    { title: "Poor AI governance is driving hidden costs", outlet: "AICD", date: "Aug 2026", url: "https://www.aicd.com.au/innovative-technology/digital-business/artificial-intelligence/poor-ai-driving-hidden-costs.html" },
+    { title: "Will AI be the risk we chose not to see?", outlet: "The Ethics Centre", date: "Jun 2026", url: "https://ethics.org.au/will-ai-be-the-risk-we-chose-not-to-see/" },
+    { title: "A tax break for startup employees that reaches almost none of them", outlet: "Treasury submission", date: "Jun 2026", url: "/assets/ibcc-submission-treasury-2026.pdf" },
+    { title: "The $13 Trillion Question: What You Have to Believe About AI", outlet: "LinkedIn", date: "Jun 2026", url: "https://www.linkedin.com/pulse/13-trillion-question-what-you-have-believe-ai-stephane-chatonsky-qkpbc" },
+    { title: "Tokens keep getting cheaper. So why is your AI bill about to explode?", outlet: "LinkedIn", date: "Jun 2026", url: "https://www.linkedin.com/pulse/tokens-keep-getting-cheaper-so-why-your-ai-bill-stephane-chatonsky-yjvac" },
+    { title: "Sitting With the Second Existential Risk: the case for an IPCC for AI", outlet: "LinkedIn / Web", date: "Apr 2026", url: "https://ipccforai.org/" },
+    { title: "The Importance of Spending Time: Reflections from 19 Years with my son", outlet: "LinkedIn", date: "Aug 2025", url: "https://www.linkedin.com/pulse/importance-spending-time-reflections-from-19-years-my-chatonsky-hhepc/" },
+    { title: "Living in AI's Age of Dissociative Identity: Embracing and Fearing the Future at Once", outlet: "LinkedIn", date: "Jun 2025", url: "https://www.linkedin.com/pulse/living-ais-age-dissociative-identity-embracing-future-chatonsky-rxcae/" },
+    { title: "Harnessing Data and Technology for Faster and Smarter Patient Recruitment", outlet: "LinkedIn", date: "May 2024", url: "https://www.linkedin.com/pulse/harnessing-data-technology-faster-smarter-patient-stephane-chatonsky-q2ohc/" },
+    { title: "In healthcare, the data and technology exist. Why not use it?", outlet: "LinkedIn", date: "May 2024", url: "https://www.linkedin.com/pulse/healthcare-data-technology-exist-why-use-stephane-chatonsky-rmv0e/" },
   ],
 
   // Understated proof points — woven into prose, not big numbers

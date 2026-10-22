@@ -90,7 +90,7 @@ const OptionC = () => {
         .opt-c .appcard .ac-btn:hover { background: #163a28; }
         .opt-c .writings { display: grid; grid-template-columns: 1fr; border-top: 1.5px solid var(--ink); }
         .opt-c .writing { display: grid; grid-template-columns: 80px 1fr 200px; gap: 28px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
-        .opt-c .writing .yr { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; }
+        .opt-c .writing .yr { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; text-transform: uppercase; }
         .opt-c .writing .t { font-size: 17px; font-weight: 500; letter-spacing: -0.005em; }
         .opt-c .writing .t a { border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
         .opt-c .writing .o { font-family: var(--mono); font-size: 10.5px; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; text-align: right; }

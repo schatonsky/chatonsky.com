@@ -53,22 +53,13 @@ const Writing = () => {
 
         .opt-c .writings { display: grid; grid-template-columns: 1fr; border-top: 1.5px solid var(--ink); }
         .opt-c .writing { display: grid; grid-template-columns: 80px 1fr 200px; gap: 28px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
-        .opt-c .writing .yr { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; }
+        .opt-c .writing .yr { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; text-transform: uppercase; }
         .opt-c .writing .t { font-size: 17px; font-weight: 500; letter-spacing: -0.005em; }
         .opt-c .writing .t a { border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
         .opt-c .writing .t a:hover { color: var(--accent); }
         .opt-c .writing .o { font-family: var(--mono); font-size: 10.5px; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; text-align: right; }
 
-        .opt-c .sec-head .sub { font-size: 14px; color: var(--soft); margin: 14px 0 0; max-width: 26ch; line-height: 1.5; }
-        .opt-c .posts { display: grid; grid-template-columns: 1fr; border-top: 1.5px solid var(--ink); }
-        .opt-c .post { display: grid; grid-template-columns: 80px 1fr 200px; gap: 28px; padding: 26px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
-        .opt-c .post .yr { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; text-transform: uppercase; }
-        .opt-c .post .q { font-family: var(--serif); font-size: 20px; line-height: 1.45; max-width: 46ch; padding-left: 18px; border-left: 2px solid var(--accent); transition: color 0.15s ease; }
-        .opt-c .post .q .tag { display: block; font-family: var(--mono); font-size: 10px; color: var(--mute); letter-spacing: 0.14em; text-transform: uppercase; margin-top: 10px; }
-        .opt-c .post .go { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-align: right; color: var(--accent); white-space: nowrap; }
-        .opt-c .post .go a { border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
-        .opt-c .post:hover .q { color: var(--accent); }
-        .opt-c .posts-more { display: inline-block; margin-top: 22px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; color: var(--soft); border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
+        .opt-c .posts-more { display: inline-block; margin-top: 28px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; color: var(--soft); border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
         .opt-c .posts-more:hover { color: var(--accent); border-color: var(--accent); }
 
         .opt-c .footer { padding: 28px 64px; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; }
@@ -86,9 +77,6 @@ const Writing = () => {
           .opt-c .appcard .ac-btn { justify-self: start; }
           .opt-c .writing { grid-template-columns: 1fr; gap: 6px; }
           .opt-c .writing .o { text-align: left; }
-          .opt-c .post { grid-template-columns: 1fr; gap: 8px; }
-          .opt-c .post .q { font-size: 18px; }
-          .opt-c .post .go { text-align: left; }
           .opt-c .footer { padding: 24px; flex-direction: column; gap: 8px; }
         }
       `}</style>
@@ -130,14 +118,14 @@ const Writing = () => {
       {posts.length > 0 &&
       <section id="posts">
         <div className="sec-num">{numPosts}</div>
-        <div className="sec-head"><div className="lab">Posts</div><h2>Shorter notes.</h2><p className="sub">Selected posts from LinkedIn on boards, capital and AI.</p></div>
+        <div className="sec-head"><div className="lab">Posts</div><h2>Shorter notes.</h2></div>
         <div>
-          <div className="posts">
+          <div className="writings">
             {posts.map((p, i) =>
-              <div key={i} className="post">
+              <div key={i} className="writing">
                 <div className="yr">{p.date}</div>
-                <div className="q">{p.hook}{p.tag && <span className="tag">{p.tag}</span>}</div>
-                <div className="go"><a href={p.url} target="_blank" rel="noopener">Read on LinkedIn &rarr;</a></div>
+                <div className="t"><a href={p.url} target="_blank" rel="noopener">{p.hook}</a></div>
+                <div className="o">{p.tag}</div>
               </div>
             )}
           </div>
