@@ -59,6 +59,15 @@ const Writing = () => {
         .opt-c .writing .t a:hover { color: var(--accent); }
         .opt-c .writing .o { font-family: var(--mono); font-size: 10.5px; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; text-align: right; }
 
+        .opt-c .entries { display: grid; grid-template-columns: 1fr; border-top: 1.5px solid var(--ink); }
+        .opt-c .entry { display: grid; grid-template-columns: 80px 1fr 200px; gap: 28px; padding: 26px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+        .opt-c .entry .yr { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; text-transform: uppercase; }
+        .opt-c .entry .q { font-family: var(--serif); font-size: 20px; line-height: 1.45; max-width: 46ch; padding-left: 18px; border-left: 2px solid var(--accent); }
+        .opt-c .entry .q a { transition: color 0.15s ease; }
+        .opt-c .entry .q .tag { display: block; font-family: var(--mono); font-size: 10px; color: var(--mute); letter-spacing: 0.14em; text-transform: uppercase; margin-top: 10px; }
+        .opt-c .entry .go { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-align: right; color: var(--accent); white-space: nowrap; }
+        .opt-c .entry .go a { border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
+        .opt-c .entry:hover .q a { color: var(--accent); }
         .opt-c .posts-more { display: inline-block; margin-top: 28px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; color: var(--soft); border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
         .opt-c .posts-more:hover { color: var(--accent); border-color: var(--accent); }
 
@@ -77,6 +86,9 @@ const Writing = () => {
           .opt-c .appcard .ac-btn { justify-self: start; }
           .opt-c .writing { grid-template-columns: 1fr; gap: 6px; }
           .opt-c .writing .o { text-align: left; }
+          .opt-c .entry { grid-template-columns: 1fr; gap: 8px; }
+          .opt-c .entry .q { font-size: 18px; }
+          .opt-c .entry .go { text-align: left; }
           .opt-c .footer { padding: 24px; flex-direction: column; gap: 8px; }
         }
       `}</style>
@@ -103,12 +115,12 @@ const Writing = () => {
         <div className="sec-num">{numWritings}</div>
         <div className="sec-head"><div className="lab">Writings</div><h2>Essays &amp; commentary.</h2></div>
         <div>
-          <div className="writings">
-            {writings.map((w, i) =>
-              <div key={i} className="writing">
-                <div className="yr">{w.date}</div>
-                <div className="t"><a href={w.url} target="_blank" rel="noopener">{w.title}</a></div>
-                <div className="o">{w.outlet}</div>
+          <div className="entries">
+            {writings.map((x, i) =>
+              <div key={i} className="entry">
+                <div className="yr">{x.date}</div>
+                <div className="q"><a href={x.url} target="_blank" rel="noopener">{x.title}</a>{x.outlet && <span className="tag">{x.outlet}</span>}</div>
+                <div className="go"><a href={x.url} target="_blank" rel="noopener">Read &rarr;</a></div>
               </div>
             )}
           </div>
@@ -120,12 +132,12 @@ const Writing = () => {
         <div className="sec-num">{numPosts}</div>
         <div className="sec-head"><div className="lab">Posts</div><h2>Shorter notes.</h2></div>
         <div>
-          <div className="writings">
-            {posts.map((p, i) =>
-              <div key={i} className="writing">
-                <div className="yr">{p.date}</div>
-                <div className="t"><a href={p.url} target="_blank" rel="noopener">{p.hook}</a></div>
-                <div className="o">{p.tag}</div>
+          <div className="entries">
+            {posts.map((x, i) =>
+              <div key={i} className="entry">
+                <div className="yr">{x.date}</div>
+                <div className="q"><a href={x.url} target="_blank" rel="noopener">{x.hook}</a>{x.tag && <span className="tag">{x.tag}</span>}</div>
+                <div className="go"><a href={x.url} target="_blank" rel="noopener">Read on LinkedIn &rarr;</a></div>
               </div>
             )}
           </div>
