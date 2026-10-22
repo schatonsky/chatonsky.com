@@ -296,7 +296,26 @@ const CV = {
   // Talks — single source of truth. Add an object here and it appears under
   // "Talks" on the /writing page automatically. Leave empty to hide the section.
   // Shape: { title, venue, date, url } (url optional).
-  talks: [],
+  talks: [
+    { title: "Boards' AI reflex: why curiosity beats caution, in conversation with Kirsten Mann", venue: "Conversation", date: "2025", url: "https://www.linkedin.com/pulse/boards-ai-reflex-why-curiosity-beats-caution-kirsten-mann-8gj1c/" },
+    { title: "AI in Healthcare panel, with Michael Sistenich and Casey Flint", venue: "UBS Conference, Sydney", date: "2023", url: "https://www.linkedin.com/feed/update/urn:li:activity:7138370854505140224/" },
+  ],
+
+  // LinkedIn posts (short-form) — curated, newest first. Shown in the "Posts"
+  // section on /writing. hook = opening line of the post, in his own words.
+  // Shape: { date: "Mon YYYY", hook, tag, url }.
+  posts: [
+    { date: "Oct 2026", tag: "AI & work", hook: "Three years of using AI every day, many hours a day. By 5 pm, I am exhausted. I have never been faster, either.", url: "https://www.linkedin.com/feed/update/urn:li:activity:7518427083124051968/" },
+    { date: "Sep 2026", tag: "Healthcare AI", hook: "Doctors given AI did better than doctors without it. They still scored below many of the AI systems working alone.", url: "https://www.linkedin.com/feed/update/urn:li:activity:7504421924463190016/" },
+    { date: "Sep 2026", tag: "AI & education", hook: "None of these three people were filmed. All three are me.", url: "https://www.linkedin.com/feed/update/urn:li:activity:7501058905406324737/" },
+    { date: "Aug 2026", tag: "AI & education", hook: "Next month I will be in 50 rooms at once. Fifty pairs of my UNSW students, one VC facing one founder, all negotiating a term sheet at the same time.", url: "https://www.linkedin.com/feed/update/urn:li:activity:7493082200234618880/" },
+    { date: "Jul 2026", tag: "Leadership", hook: "If you want answers, get out of my class. Wharton, 1997.", url: "https://www.linkedin.com/feed/update/urn:li:activity:7488012952290238464/" },
+    { date: "Jun 2026", tag: "AI risk", hook: "I held the prospect of superhuman AI as something for my grandchildren. About a year ago I realised I had been wrong about the timing, and not by a little.", url: "https://www.linkedin.com/feed/update/urn:li:activity:7476107573881049088/" },
+    { date: "Jun 2026", tag: "AI economics", hook: "My AI bill went from $0 to $2,700 a year in three years.", url: "https://www.linkedin.com/feed/update/urn:li:activity:7475333121895452672/" },
+    { date: "Jun 2026", tag: "Tax policy", hook: "The proposed CGT changes would hit start-up employees hard, specifically those holding options under employee share schemes.", url: "https://www.linkedin.com/feed/update/urn:li:activity:7473569421651910656/" },
+    { date: "Jun 2026", tag: "AI risk", hook: "An AI model attempted blackmail in 96% of trials. It was built by the most safety-conscious lab in the world.", url: "https://www.linkedin.com/feed/update/urn:li:activity:7473155026157412352/" },
+    { date: "Feb 2025", tag: "Governance", hook: "The Great DEI Rollback: what it reveals about corporate values and business integrity.", url: "https://www.linkedin.com/feed/update/urn:li:activity:7295917153910734848/" },
+  ],
 
   // Apps & tools ("Things") — single source of truth. To add a new tool, add one
   // object here. It appears automatically on the /writing page and on the home teaser.

@@ -9,6 +9,14 @@ const Writing = () => {
   const apps = C.apps || [];
   const writings = C.writings || [];
   const talks = C.talks || [];
+  const posts = C.posts || [];
+  // Section numbers follow whichever sections are present.
+  let n = 1;
+  const num = () => String(n++).padStart(2, '0');
+  const numWritings = num();
+  const numPosts = posts.length > 0 ? num() : '';
+  const numTalks = talks.length > 0 ? num() : '';
+  const numThings = num();
 
   return (
     <div className="opt-c wr">
@@ -51,6 +59,18 @@ const Writing = () => {
         .opt-c .writing .t a:hover { color: var(--accent); }
         .opt-c .writing .o { font-family: var(--mono); font-size: 10.5px; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; text-align: right; }
 
+        .opt-c .sec-head .sub { font-size: 14px; color: var(--soft); margin: 14px 0 0; max-width: 26ch; line-height: 1.5; }
+        .opt-c .posts { display: grid; grid-template-columns: 1fr; border-top: 1.5px solid var(--ink); }
+        .opt-c .post { display: grid; grid-template-columns: 80px 1fr 200px; gap: 28px; padding: 26px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+        .opt-c .post .yr { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; text-transform: uppercase; }
+        .opt-c .post .q { font-family: var(--serif); font-size: 20px; line-height: 1.45; max-width: 46ch; padding-left: 18px; border-left: 2px solid var(--accent); transition: color 0.15s ease; }
+        .opt-c .post .q .tag { display: block; font-family: var(--mono); font-size: 10px; color: var(--mute); letter-spacing: 0.14em; text-transform: uppercase; margin-top: 10px; }
+        .opt-c .post .go { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-align: right; color: var(--accent); white-space: nowrap; }
+        .opt-c .post .go a { border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
+        .opt-c .post:hover .q { color: var(--accent); }
+        .opt-c .posts-more { display: inline-block; margin-top: 22px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; color: var(--soft); border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
+        .opt-c .posts-more:hover { color: var(--accent); border-color: var(--accent); }
+
         .opt-c .footer { padding: 28px 64px; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.06em; }
         .opt-c .footer a:hover { color: var(--accent); }
 
@@ -66,6 +86,9 @@ const Writing = () => {
           .opt-c .appcard .ac-btn { justify-self: start; }
           .opt-c .writing { grid-template-columns: 1fr; gap: 6px; }
           .opt-c .writing .o { text-align: left; }
+          .opt-c .post { grid-template-columns: 1fr; gap: 8px; }
+          .opt-c .post .q { font-size: 18px; }
+          .opt-c .post .go { text-align: left; }
           .opt-c .footer { padding: 24px; flex-direction: column; gap: 8px; }
         }
       `}</style>
@@ -75,6 +98,7 @@ const Writing = () => {
         <nav>
           <a href="/">← chatonsky.com</a>
           <a href="#writings">Writings</a>
+          {posts.length > 0 && <a href="#posts">Posts</a>}
           {talks.length > 0 && <a href="#talks">Talks</a>}
           <a href="#things">Things</a>
           <a href="/#enquiries">Contact</a>
@@ -84,11 +108,11 @@ const Writing = () => {
       <div className="wr-hero">
         <div className="lab">Writings, Talks &amp; Things</div>
         <h1>What I write, say <span className="acc">and build.</span></h1>
-        <p className="stand">A running index of long-form essays and commentary on governance, capital and AI — alongside talks and practical tools for directors.</p>
+        <p className="stand">A running index of essays, shorter posts and commentary on governance, capital and AI — alongside talks and practical tools for directors.</p>
       </div>
 
       <section id="writings">
-        <div className="sec-num">01</div>
+        <div className="sec-num">{numWritings}</div>
         <div className="sec-head"><div className="lab">Writings</div><h2>Essays &amp; commentary.</h2></div>
         <div>
           <div className="writings">
@@ -103,9 +127,27 @@ const Writing = () => {
         </div>
       </section>
 
+      {posts.length > 0 &&
+      <section id="posts">
+        <div className="sec-num">{numPosts}</div>
+        <div className="sec-head"><div className="lab">Posts</div><h2>Shorter notes.</h2><p className="sub">Selected posts from LinkedIn on boards, capital and AI.</p></div>
+        <div>
+          <div className="posts">
+            {posts.map((p, i) =>
+              <div key={i} className="post">
+                <div className="yr">{p.date}</div>
+                <div className="q">{p.hook}{p.tag && <span className="tag">{p.tag}</span>}</div>
+                <div className="go"><a href={p.url} target="_blank" rel="noopener">Read on LinkedIn &rarr;</a></div>
+              </div>
+            )}
+          </div>
+          {C.contact && C.contact.linkedinUrl && <a className="posts-more" href={C.contact.linkedinUrl} target="_blank" rel="noopener">Follow on LinkedIn &rarr;</a>}
+        </div>
+      </section>}
+
       {talks.length > 0 &&
       <section id="talks">
-        <div className="sec-num">02</div>
+        <div className="sec-num">{numTalks}</div>
         <div className="sec-head"><div className="lab">Talks</div><h2>Panels &amp; presentations.</h2></div>
         <div>
           <div className="writings">
@@ -121,7 +163,7 @@ const Writing = () => {
       </section>}
 
       <section id="things">
-        <div className="sec-num">{talks.length > 0 ? '03' : '02'}</div>
+        <div className="sec-num">{numThings}</div>
         <div className="sec-head"><div className="lab">Things</div><h2>Tools built for founders, boards and educators.</h2></div>
         <div>
           {apps.length === 0 && <p style={{ color: 'var(--mute)', fontFamily: 'var(--serif)' }}>More tools coming soon.</p>}
