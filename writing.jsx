@@ -73,6 +73,7 @@ const Writing = () => {
         .opt-c .entry .go { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-align: right; color: var(--accent); white-space: nowrap; }
         .opt-c .entry .go a { border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
         .opt-c .entry:hover .q a { color: var(--accent); }
+        .opt-c .entries--short .entry .q { font-size: 17px; line-height: 1.5; }
         .opt-c .posts-more { display: inline-block; margin-top: 28px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; color: var(--soft); border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
         .opt-c .posts-more:hover { color: var(--accent); border-color: var(--accent); }
 
@@ -93,6 +94,7 @@ const Writing = () => {
           .opt-c .writing .o { text-align: left; }
           .opt-c .entry { grid-template-columns: 1fr; gap: 8px; }
           .opt-c .entry .q { font-size: 18px; }
+          .opt-c .entries--short .entry .q { font-size: 16px; }
           .opt-c .entry .go { text-align: left; }
           .opt-c .footer { padding: 24px; flex-direction: column; gap: 8px; }
         }
@@ -137,7 +139,7 @@ const Writing = () => {
         <div className="sec-num">{numPosts}</div>
         <div className="sec-head"><div className="lab">Posts</div><h2>Shorter notes.</h2></div>
         <div>
-          <div className="entries">
+          <div className="entries entries--short">
             {posts.map((x, i) =>
               <div key={i} className="entry">
                 <div className="yr">{x.date}</div>
