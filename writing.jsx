@@ -150,12 +150,12 @@ const Writing = () => {
         <div className="sec-num">{numTalks}</div>
         <div className="sec-head"><div className="lab">Talks</div><h2>Panels &amp; presentations.</h2></div>
         <div>
-          <div className="writings">
-            {talks.map((t, i) =>
-              <div key={i} className="writing">
-                <div className="yr">{t.date}</div>
-                <div className="t">{t.url ? <a href={t.url} target="_blank" rel="noopener">{t.title}</a> : t.title}</div>
-                <div className="o">{t.venue}</div>
+          <div className="entries">
+            {talks.map((x, i) =>
+              <div key={i} className="entry">
+                <div className="yr">{x.date}</div>
+                <div className="q">{x.url ? <a href={x.url} target="_blank" rel="noopener">{x.title}</a> : x.title}{x.venue && <span className="tag">{x.venue}</span>}</div>
+                <div className="go">{x.url && <a href={x.url} target="_blank" rel="noopener">View &rarr;</a>}</div>
               </div>
             )}
           </div>
